@@ -1,0 +1,113 @@
+<?php
+
+/**
+ * implements hook_schema().
+ */
+function mci_schema() {
+  $schema = array();
+
+  $schema['mci_importer'] = array(
+    'description' => 'Stores the content importers.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The internal identifier.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'The name of the importer.',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'description' => array(
+        'description' => 'The description of the importer',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'template' => array(
+        'description' => 'Stores the csv template for the importer in a serialized array..',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'config' => array(
+        'description' => 'Stores the importer configuration in a serialized array.',
+        'type' => 'blob',
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'Boolean to determine if enabled. (0 = not enabled, 1 = enabled)',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 1,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  $schema['mci_importer_batch'] = array(
+    'description' => 'Stores all the batch operations for the importer',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The internal identifier',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'importer_id' => array(
+        'description' => 'The {mci_importer}.id',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'fid' => array(
+        'description' => 'The {file_managed}.fid',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'current' => array(
+        'description' => 'The current row the importer batch is on',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'total' => array(
+        'description' => 'The total number of rows in the import file',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'The current status of the batch process (0 = queued, 1 = processing, 2 = completed)',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+      ),
+      'start_time' => array(
+        'description' => 'The unix timestamp when the batch was started',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'end_time' => array(
+        'description' => 'The unix timestamp when the batch was completed',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}
+
+/**
+ * Adds importer batch table
+ */
+function mci_update_7001() {
+  $schema = mci_schema();
+
+  if (!db_table_exists('mci_importer_batch')) {
+    db_create_table('mci_importer_batch', $schema['mci_importer_batch']);
+  }
+}

@@ -1,0 +1,418 @@
+<?php
+
+/**
+ * implements hook_menu().
+ */
+
+function og_price_override_import_menu() {
+  $items = array();
+
+  $items['admin/price-override-importer'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => t('Price Override Importer'),
+    'description' => t('Import Group Price Overrides'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('og_price_override_import_importer_form'),
+    'access arguments' => array('use price override importer'),
+  );
+
+  $items['admin/price-override-importer/batch/%og_price_override_import_batch'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Content Importer Batch Operation'),
+    'description' => t('Performs the batch operations for an import'),
+    'page callback' => 'og_price_override_import_batch_page',
+    'page arguments' => array(3),
+    'access arguments' => array('use price override importer'),
+  );
+  $items['admin/price-override-importer/batch/%og_price_override_import_batch/complete'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Content Importer Batch Operation Complete'),
+    'page callback' => 'og_price_override_import_batch_complete_page',
+    'page arguments' => array(3),
+    'access arguments' => array('use price override importer'),
+  );
+
+  $items['admin/price-override-importer/import'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => "Import",
+  );
+
+  $items['admin/price-override-importer/logs'] = array(
+    'type' => MENU_LOCAL_TASK,
+    'title' => "Import Logs",
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('og_price_override_import_importer_log_form'),
+    'access arguments' => array('use price override importer'),
+  );
+
+  return $items;
+}
+
+/**
+ * implements hook_permission().
+ */
+function og_price_override_import_permission() {
+  return array(
+    'use price override importer' => array(
+      'title' => t('Use Price Override Importer'),
+      'description' => t('Allow access to use price override importer.'),
+    ),
+  );
+}
+
+/**
+ * Load a importer batch object by id
+ * 
+ * @param  integer $id The id of the batch to load
+ * @return object  The batch object or null if invalid batch id
+ */
+function og_price_override_import_batch_load($id) {
+  return og_price_override_import_batch_load_multiple((is_array($id) ? $id : array($id)),array(),TRUE);
+}
+
+/**
+ * Load multiple importer batch ojects based on id or other conditions
+ */
+function og_price_override_import_batch_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+  $query = db_select('og_price_override_import_batch')->fields('og_price_override_import_batch');
+
+  if (!empty($ids)) {
+    $query->condition('id',$ids,'IN');
+  }
+
+  if (!empty($conditions)) {
+    foreach ($conditions as $key => $value) {
+      $query->condition($key,$value);
+    }
+  }
+
+  $importer_batches = $query->orderBy('end_time','DESC')->execute()->fetchAll();  
+
+  $result = empty($importer_batches) ? (($reset) ? NULL : array()) : (($reset) ? reset($importer_batches) : $importer_batches);
+
+  return $result;
+}
+
+/**
+ * Saves the importer batch object
+ */
+function og_price_override_import_batch_save(&$importer_batch) {
+  $primary_keys = (!empty($importer_batch->id)) ? array('id') : array();
+
+  return drupal_write_record('og_price_override_import_batch', $importer_batch, $primary_keys);
+}
+
+function og_price_override_import_importer_log_form($form,&$form_state) {
+  drupal_set_title(t('!name Import Logs',array('!name' => 'Group Price Override')));
+
+  $importer_batches = og_price_override_import_batch_load_multiple();
+
+  $header = array(
+    t('ID'),
+    t('User'),
+    t('Current Row'),
+    t('Total Rows'),
+    t('Status'),
+    t('Start Time'),
+    t('End Time'),
+  );
+
+  $rows = array();
+
+  foreach ($importer_batches as $batch) {
+    $user = user_load($batch->uid);
+    $row = array();
+    $row[] = $batch->id;
+    $row[] = $user->name;
+    $row[] = $batch->current;
+    $row[] = $batch->total;
+    switch ($batch->status) {
+      case 0:
+        $row[] = t('Queued');
+        break;
+      case 1:
+        $row[] = t('Processing');
+        break;
+      case 2:
+        $row[] = t('Completed');
+        break;
+    }
+
+    $row[] = (!empty($batch->start_time)) ? date('m-d-Y h:i a',$batch->start_time) : '';
+    $row[] = (!empty($batch->end_time)) ? date('m-d-Y h:i a',$batch->end_time) : '';
+
+    $rows[] = $row;
+  }
+
+  $form['logs'] = array(
+    '#type' => 'container',
+    '#theme' => 'table',
+    '#header' => $header,
+    '#rows' => $rows,
+    '#empty' => t('No import logs found.'),
+  );
+
+  return $form;
+}
+
+function og_price_override_import_importer_form($form,&$form_state) {
+  $header = array(
+    t('DT_PN'),
+    t('GROUP'),
+    t('Group_PN'),
+    t('PRICE'),
+  );
+
+  $template_rows = array(
+    array(
+      t('The product\'s sku or model number.'),
+      t('The name of the group.'),
+      t('The group\'s part number.'),
+      t('The price override.'),
+    ),
+  );
+
+
+  $form['template_wrapper'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'CSV Import Column Template',
+  );
+
+  $form['template_wrapper']['template'] = array(
+    '#header' => $header,
+    '#rows' => $template_rows,
+    '#empty' => t('No Template'),
+    '#type' => 'container',
+    '#theme' => 'table',
+  );
+
+  $max_file_size = min(array(file_upload_max_size(),4 * 1024 * 1024));
+
+  $form['import_file'] = array(
+    '#type' => 'managed_file',
+    '#title' => t('Import File'),
+    '#description' => t('The file that contains the import data.<br /><strong>File Format:</strong> csv<br /><strong>File Size:</strong> '.  format_size($max_file_size)),
+    '#upload_location' => 'public://price-override-importer/csv/template/',
+    '#upload_validators' => array(
+      'file_validate_extensions' => array('csv'),
+      'file_validate_size' => array($max_file_size),
+    ),
+  );
+
+  $form['actions'] = array(
+    '#type' => 'actions',
+    'submit' => array(
+      '#type' => 'submit',
+      '#value' => t('Import Price Overrides'),
+    ),
+  );
+
+  return $form;
+}
+
+function og_price_override_import_importer_form_submit($form, &$form_state) {
+  global $user;
+  if (!empty($form_state['values']['import_file'])) {
+    $file = file_load($form_state['values']['import_file']);
+    $file->status = FILE_STATUS_PERMANENT;
+    file_save($file);
+
+    $importer_batch = new stdClass();
+    $importer_batch->uid = $user->uid;
+    $importer_batch->status = 0;
+    $importer_batch->start_time = REQUEST_TIME;
+    $importer_batch->end_time = '';
+    $importer_batch->current = 0;
+    $importer_batch->total = 0;
+    $importer_batch->fid = $form_state['values']['import_file'];
+
+    og_price_override_import_batch_save($importer_batch);
+
+    drupal_goto('admin/price-override-importer/batch/'.$importer_batch->id);
+  } else {
+    drupal_set_message("The csv import file you uploaded is invalid, please upload a valid csv file.","error");
+  }
+}
+
+
+function og_price_override_import_batch_process($importer_batch, &$context) {
+  if (!isset($context['sandbox']['progress'])) {
+    $file = file_load($importer_batch->fid);
+    $file_rows = array();
+    $file_header = array();
+    $row = 0;
+    if (($handle = fopen(drupal_realpath($file->uri), "r")) !== FALSE) {
+      while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+        if ($row == 0) {
+          $file_header = $data;
+        } else {
+          if (count($data) == count($file_header)) {
+            $file_rows[] = $data;
+          }
+        }
+        $row++;
+      }
+      fclose($handle);
+    }
+    
+    $linecount = count($file_rows);
+
+    $context['sandbox']['file_header'] = $file_header;
+    $context['sandbox']['file_rows'] = $file_rows;
+
+    $context['sandbox']['progress'] = 0;
+    $context['sandbox']['max'] = max($linecount,0);
+  }
+
+  $limit = 5;
+
+  $file_rows = $context['sandbox']['file_rows'];
+
+  $rows = array_splice($file_rows, $context['sandbox']['progress'], $limit);
+
+  foreach ($rows as $row) {
+    $context['sandbox']['progress']++;
+
+    $result = og_price_override_import_import_price_override($row);
+
+    if ($result == 0) {
+      $context['results']['invalid'][] = "Processed Row: ".implode(', ',$row);
+    } else {
+      $context['results']['valid'][] = "Processed Row: ".implode(', ',$row);
+    }
+
+    $context['message'] = "Processing Row: ".implode(', ',$row);
+  }
+
+  $importer_batch->current = $context['sandbox']['progress'];
+  $importer_batch->total = $context['sandbox']['max'];
+  $importer_batch->status = 1;
+
+  og_price_override_import_batch_save($importer_batch);
+
+  // Inform the batch engine that we are not finished,
+  // and provide an estimation of the completion level we reached.
+  if ($context['sandbox']['progress'] != $context['sandbox']['max']) {
+    $context['finished'] = $context['sandbox']['progress'] / $context['sandbox']['max'];
+  }
+}
+
+/**
+ * Batch 'finished' callback
+ */
+function og_price_override_import_batch_finished($success, $results, $operations) {
+  // The 'success' parameter means no fatal PHP errors were detected. All
+  // other error management should be handled using 'results'.
+  if ($success) {
+    $message = format_plural(count((!empty($results['valid'])) ? $results['valid'] : array()), '1 price override imported.', '@count price overrides imported.');
+    drupal_set_message($message);
+    if (!empty($results['invalid'])) {
+      $invalid_message = format_plural(count((!empty($results['invalid'])) ? $results['invalid'] : array()), '1 invalid price override.', '@count invalid price overrides.');
+      drupal_set_message($invalid_message,"error");
+    }
+  }
+  else {
+    $message = t('Finished with an error.');
+    drupal_set_message($message, 'error');
+  }
+}
+
+function og_price_override_import_batch_page($importer_batch) {
+  $batch = array(
+    'title' => t('Importing Price Overrides'),
+    'operations' => array(
+      array('og_price_override_import_batch_process', array($importer_batch)),
+    ),
+    'init_message' => t('Price override import starting.'),
+    'progress_message' => t('Importing price overrides...'),
+    'finished' => 'og_price_override_import_batch_finished',
+  );
+
+  batch_set($batch);
+
+  batch_process('admin/price-override-importer/batch/'.$importer_batch->id.'/complete');
+}
+
+function og_price_override_import_batch_complete_page($importer_batch) {
+  $file = file_load($importer_batch->fid);
+  $file->status = 0;
+  file_save($file);
+
+  $importer_batch->status = 2;
+  $importer_batch->end_time = REQUEST_TIME;
+  og_price_override_import_batch_save($importer_batch);
+
+  drupal_goto('admin/price-override-importer');
+}
+
+function og_price_override_import_import_price_override($row) {
+  global $user;
+
+  if (empty($row)) {
+    return FALSE;
+  }
+
+  $column_names = array('DT_PN','GROUP','Group_PN','PRICE');
+
+  foreach ($row as $key => $data) {
+    $row[$column_names[$key]] = $data;
+    unset($row[$key]);
+  }
+
+  $query = db_select('node','n')->fields('n',array('nid'));
+  $query->join('uc_products','p','p.nid = n.nid');
+  $query->condition('p.model', $row['DT_PN'], 'LIKE');
+
+  $nid = $query->execute()->fetchColumn();
+
+  $node = node_load($nid);
+
+  if (empty($node) || !uc_product_is_product($node) || !og_is_group_content_type('node',$node->type)) {
+    return FALSE;
+  }
+
+  $og_audience_fields = og_get_group_audience_fields('node',$node->type);
+  if (!empty($og_audience_fields)) {
+    $og_audience_field = reset(array_keys($og_audience_fields));
+
+    $gids = array();
+
+    if (!empty($node->{$og_audience_field})) {
+      foreach ($node->{$og_audience_field}[LANGUAGE_NONE] as $g) {
+        $gids[$g['target_id']] = $g['target_id'];
+      }
+    }
+
+    $gid = db_select('node','n')->fields('n',array('nid'))->condition('n.title',trim($row['GROUP']),'LIKE')->execute()->fetchColumn();
+
+    $group = node_load($gid);
+
+    if (empty($group) || !og_is_group('node',$group)) {
+      return FALSE;
+    }
+
+    $gids[$group->nid] = $group->nid;
+
+    $sell_price = number_format($node->sell_price,2,'.','');
+    $row['PRICE'] = preg_replace('/(\$|,)/','',$row['PRICE']);
+    $price_override = number_format($row['PRICE'],2,'.','');
+
+    if ($ell_price != $price_override || !empty($row['Group_PN'])) {
+      og_price_override_save_price_override($node->nid,$group->nid, $price_override, $row['Group_PN']);
+    } else {
+      og_price_override_remove_price_override($node->nid,$group->nid);
+    }
+
+    $audience_value = array(LANGUAGE_NONE => array());
+
+    foreach ($gids as $group_id) {
+      $audience_value[LANGUAGE_NONE][] = array('target_id' => $group_id);
+    }
+
+    $node->{$og_audience_field} = $audience_value;
+
+    node_save($node);
+  }
+
+  return TRUE;
+}

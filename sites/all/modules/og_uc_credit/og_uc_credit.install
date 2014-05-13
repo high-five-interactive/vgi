@@ -1,0 +1,10 @@
+<?php
+
+/**
+ * Implements hook_uninstall().
+ */
+function og_uc_credit_uninstall() {
+  db_delete('variable')
+    ->condition('name', 'og_uc_credit_%', 'LIKE')
+    ->execute();
+}

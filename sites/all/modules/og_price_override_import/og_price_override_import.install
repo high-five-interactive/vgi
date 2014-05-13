@@ -1,0 +1,60 @@
+<?php
+
+/**
+ *Implements hook_schema().
+ */
+function og_price_override_import_schema() {
+  $schema = array();
+
+  $schema['og_price_override_import_batch'] = array(
+    'description' => 'Stores all the price override import batches.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The internal identifier for the price override.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'uid' => array(
+        'description' => 'The {user}.uid of the user who started the price override import batch.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'fid' => array(
+        'description' => 'The {file_managed}.fid',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'current' => array(
+        'description' => 'The current row the importer batch is on',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'total' => array(
+        'description' => 'The total number of rows in the import file',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'status' => array(
+        'description' => 'The current status of the batch process (0 = queued, 1 = processing, 2 = completed)',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+      ),
+      'start_time' => array(
+        'description' => 'The unix timestamp when the batch was started',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+      'end_time' => array(
+        'description' => 'The unix timestamp when the batch was completed',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+
+  return $schema;
+}

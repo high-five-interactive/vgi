@@ -1,0 +1,6 @@
+name = OG Price Override
+description = "Allows Price Overrides for products based on group"
+package = "Boss Creative"
+dependencies[] = og
+dependencies[] = uc_product
+core = 7.x

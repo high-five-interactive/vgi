@@ -1,0 +1,14 @@
+.no-sidebars {
+  #top-bar-inner,
+  #header-inner,
+  #main-inner,
+  #footer {
+    padding: 6/16*1em 16/16*1em;
+    max-width: $media_atat;
+    margin: 0 auto;
+
+    @media all and (min-width: $media_atat) {
+      padding: 6/16*1em 0;
+    }
+  }
+}

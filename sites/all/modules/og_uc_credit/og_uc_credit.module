@@ -1,0 +1,78 @@
+<?php
+
+function og_uc_credit_get_enabled_group_list() {
+
+  // Get current list of enabled/disabled groups and make sure values are set correctly
+  $group_list = variable_get('og_uc_credit_enabled_groups',array());
+  foreach ($group_list as $gid => $val) {
+    $group_list[$gid] = (!empty($val)) ? $gid : 0;
+  }
+
+  // Get all groups and add any groups not currently in the list of enabled/disabled groups
+  $groups = og_get_all_group();
+  foreach ($groups as $gid) {
+    if (!isset($group_list[$gid])) {
+      $group_list[$gid] = $gid;
+    }
+  }
+
+  return $group_list;
+}
+
+function og_uc_credit_get_group_list() {
+
+  $group_list = array();
+
+  $groups = og_get_all_group();
+  foreach ($groups as $gid) {
+    $group = node_load($gid);
+    $group_list[$gid] = $group->title;
+  }
+
+  return $group_list;
+}
+
+function og_uc_credit_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'uc_payment_method_settings_form') {
+    if (preg_match('/admin\/store\/settings\/payment\/method\/credit$/',$form['#action'])) {
+
+      $form['og_limits'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Organic Group Limitations'),
+        '#group' => 'uc_credit',
+      );
+
+      $group_options = og_uc_credit_get_group_list();
+
+      $enabled_groups = og_uc_credit_get_enabled_group_list();
+
+      $form['og_limits']['og_uc_credit_enabled_groups'] = array(
+        '#type' => 'checkboxes',
+        '#options' => $group_options,
+        '#default_value' => $enabled_groups,
+        '#title' => t('Allow Credit Card Payments For')
+      );
+    }
+  }
+}
+
+function og_uc_credit_uc_payment_method_checkout_alter(&$methods, $order) {
+  $enabled = TRUE;
+
+  $enabled_groups = og_uc_credit_get_enabled_group_list();
+
+  $groups = og_get_groups_by_user();
+
+  if (!empty($groups['node'])) {
+    foreach ($groups['node'] as $gid) {
+      if (empty($enabled_groups[$gid])) {
+        $enabled = FALSE;
+        break;
+      }
+    }
+  }
+
+  if (!$enabled) {
+    unset($methods['credit']);
+  }
+}

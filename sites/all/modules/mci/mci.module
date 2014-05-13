@@ -1,0 +1,893 @@
+<?php
+
+/**
+ * implements hook_menu().
+ */
+function mci_menu() {
+  $items = array();
+
+  $items['admin/config/content/mci'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => t('Mass Content Importer'),
+    'description' => t('Configure the mass content importer'),
+    'access arguments' => array('administer mci'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mci_admin_form'),
+    'file' => 'inc/mci.admin.inc',
+  );
+
+  $items['admin/config/content/mci/list'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => t('Importer List'),
+  );
+
+  $items['admin/config/content/mci/add'] = array(
+    'type' => MENU_LOCAL_ACTION,
+    'title' => t('Add Importer'),
+    'access arguments' => array('administer mci'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mci_admin_importer_add_form'),
+    'file' => 'inc/mci.admin.inc',
+  );
+
+  $items['admin/config/content/mci/%mci_importer'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => t('Edit Importer'),
+    'title callback' => 'mci_importer_form_title',
+    'title arguments' => array(4),
+    'access arguments' => array('administer mci'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mci_admin_importer_edit_form',4),
+    'file' => 'inc/mci.admin.inc',
+  );
+
+  $items['admin/config/content/mci/%mci_importer/edit'] = array(
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'title' => t('Edit Importer'),
+  );
+
+  $items['admin/config/content/mci/%mci_importer/mapping'] = array(
+    'type' => MENU_LOCAL_TASK,
+    'title' => t('Field Mapping'),
+    'access callback' => 'mci_mapping_access',
+    'access arguments' => array(4),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mci_admin_importer_mapping_form',4),
+    'file' => 'inc/mci.admin.inc',
+  );
+
+  $items['admin/config/content/mci/%mci_importer/delete'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Delete Importer'),
+    'access arguments' => array('administer mci'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mci_admin_importer_delete_form',4),
+    'file' => 'inc/mci.admin.inc',
+  );
+
+  $items['admin/config/content/mci/%mci_importer/toggle'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Toggle Importer'),
+    'access arguments' => array('administer mci'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mci_admin_importer_toggle_form',4),
+    'file' => 'inc/mci.admin.inc',
+  );
+
+  $items['admin/mci'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'title' => t('Content Importer'),
+    'description' => t('Import content using the mass content importer'),
+    'page callback' => 'mci_importer_page',
+    'file' => 'inc/mci.pages.inc',
+    'access callback' => 'mci_importer_list_access',
+  );
+
+  $items['admin/mci/batch/%mci_importer_batch'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Content Importer Batch Operation'),
+    'description' => t('Performs the batch operations for an import'),
+    'page callback' => 'mci_importer_batch_page',
+    'page arguments' => array(3),
+    'file' => 'inc/mci.pages.inc',
+    'access callback' => 'mci_importer_list_access',
+  );
+  $items['admin/mci/batch/%mci_importer_batch/complete'] = array(
+    'type' => MENU_CALLBACK,
+    'title' => t('Content Importer Batch Operation Complete'),
+    'page callback' => 'mci_importer_batch_complete_page',
+    'page arguments' => array(3),
+    'file' => 'inc/mci.pages.inc',
+    'access callback' => 'mci_importer_list_access',
+  );
+
+  $importers = mci_importer_load_multiple();
+
+  foreach ($importers as $importer) {
+    $items['admin/mci/'.$importer->id] = array(
+      'type' => MENU_NORMAL_ITEM,
+      'title' => $importer->name,
+      'description' => $importer->description,
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('mci_importer_form',2),
+      'file' => 'inc/mci.pages.inc',
+      'access callback' => 'mci_importer_access',
+      'access arguments' => array(2),
+    );
+
+    $items['admin/mci/'.$importer->id.'/import'] = array(
+      'type' => MENU_DEFAULT_LOCAL_TASK,
+      'title' => "Import",
+    );
+
+    $items['admin/mci/'.$importer->id.'/logs'] = array(
+      'type' => MENU_LOCAL_TASK,
+      'title' => "Import Logs",
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('mci_importer_log_form',2),
+      'file' => 'inc/mci.pages.inc',
+      'access callback' => 'mci_importer_access',
+      'access arguments' => array(2),
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * implements hook_theme().
+ */
+function mci_theme() {
+  return array(
+    'mci_importer_list' => array(
+      'variables' => array(
+        'content' => NULL,
+      ),
+    ),
+  );
+}
+
+/**
+ * implements hook_permission().
+ */
+function mci_permission() {
+  return array(
+    'administer mci' => array(
+      'title' => t('Administer Mass Content Importer'),
+      'description' => t('Perform administration tasks for Mass Content Importer.'),
+    ),
+    'use mci importers' => array(
+      'title' => t('Use Importers'),
+      'description' => t('Allow access to use importers and import content.'),
+    ),
+  );
+}
+
+/**
+ * Load a importer batch object by id
+ * 
+ * @param  integer $id The id of the batch to load
+ * @return object  The batch object or null if invalid batch id
+ */
+function mci_importer_batch_load($id) {
+  return mci_importer_batch_load_multiple((is_array($id) ? $id : array($id)),array(),TRUE);
+}
+
+/**
+ * Load multiple importer batch ojects based on id or other conditions
+ */
+function mci_importer_batch_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+  $query = db_select('mci_importer_batch')->fields('mci_importer_batch');
+
+  if (!empty($ids)) {
+    $query->condition('id',$ids,'IN');
+  }
+
+  if (!empty($conditions)) {
+    foreach ($conditions as $key => $value) {
+      $query->condition($key,$value);
+    }
+  }
+
+  $importer_batches = $query->orderBy('end_time','DESC')->execute()->fetchAll();
+
+  if (!empty($importer_batches)) {
+    foreach ($importer_batches as &$importer_batch) {
+      $importer_batch->importer = mci_importer_load($importer_batch->importer_id);
+    }
+  }
+
+  
+
+  $result = empty($importer_batches) ? (($reset) ? NULL : array()) : (($reset) ? reset($importer_batches) : $importer_batches);
+
+  return $result;
+}
+
+/**
+ * Saves the importer batch object
+ */
+function mci_importer_batch_save(&$importer_batch) {
+  $primary_keys = (!empty($importer_batch->id)) ? array('id') : array();
+
+  return drupal_write_record('mci_importer_batch', $importer_batch, $primary_keys);
+}
+
+/**
+ * Load a single importer based on id.
+ */
+function mci_importer_load($id) {
+  return mci_importer_load_multiple((is_array($id) ? $id : array($id)),array(),TRUE);
+}
+
+/**
+ * Load multiple importers based on id or other conditions
+ */
+function mci_importer_load_multiple($ids = array(), $conditions = array(), $reset = FALSE) {
+  $query = db_select('mci_importer')->fields('mci_importer');
+
+  if (!empty($ids)) {
+    $query->condition('id',$ids,'IN');
+  }
+
+  if (!empty($conditions)) {
+    foreach ($conditions as $key => $value) {
+      $query->condition($key,$value);
+    }
+  }
+
+  $importers = $query->execute()->fetchAll();
+
+  if (!empty($importers)) {
+    foreach ($importers as &$importer) {
+      $importer->template = unserialize($importer->template);
+      $importer->config = unserialize($importer->config);
+    }
+  }
+
+  return empty($importers) ? (($reset) ? NULL : array()) : (($reset) ? reset($importers) : $importers);
+}
+
+/**
+ * Title callback for edit importer page
+ */
+function mci_importer_form_title($importer) {
+  return t("Edit Importer '!name'", array('!name' => $importer->name));
+}
+
+/**
+ * Saves the importer
+ */
+function mci_importer_save(&$importer) {
+  $primary_keys = (!empty($importer->id)) ? array('id') : array();
+
+  $importer->template = serialize((!empty($importer->template)) ? $importer->template : array());
+  $importer->config = serialize((!empty($importer->config)) ? $importer->config : array());
+
+  $return = drupal_write_record('mci_importer', $importer, $primary_keys);
+
+  menu_rebuild();
+
+  return $return;
+}
+
+/**
+ * Toggle the importer
+ */
+function mci_importer_toggle(&$importer) {
+  $importer->status = !$importer->status;
+
+  mci_importer_save($importer);
+}
+
+/**
+ * Deletes the importer
+ */
+function mci_importer_delete($importer) {
+  db_delete('mci_importer')->condition('id',$importer->id)->execute();
+}
+
+/**
+ * Access Callback for importer field mapping page
+ */
+function mci_mapping_access($importer) {
+  return user_access('administer mci') && !empty($importer) && !empty($importer->template) && !empty($importer->config) && !empty($importer->config['content_type']);
+}
+
+/**
+ * Access Callback for importer listing
+ */
+function mci_importer_list_access() {
+  global $user;
+
+  $access = (user_access('administer mci') || user_access('use mci importers'));
+
+  if ($user->uid == 1) {
+    return TRUE;
+  }
+
+  return $access;
+}
+
+/**
+ * Access Callback for importer form access
+ */
+function mci_importer_access($importer_id) {
+  global $user;
+
+  $access = (user_access('administer mci') || user_access('use mci importers'));
+
+  if ($user->uid == 1) {
+    $access = TRUE;
+  }
+
+  $importer = mci_importer_load($importer_id);
+  return $access && !empty($importer) && !empty($importer->template) && !empty($importer->config) && !empty($importer->config['mapping']) && !empty($importer->config['content_type']);
+}
+
+/**
+ * Process csv file and output the array of header cells
+ */
+function mci_process_template_csv($file) {
+  if (empty($file) || !is_object($file) || empty($file->uri)) {
+    return array();
+  }
+
+  $column_names = array();
+
+  if (($handle = fopen(drupal_realpath($file->uri), "r")) !== FALSE) {
+    $column_names = fgetcsv($handle, 1000, ",");
+    fclose($handle);
+  }
+
+  return $column_names;
+}
+/**
+ * Gets the status of the importer
+ */
+function mci_importer_get_status($importer, $return_message = FALSE) {
+  $status = 1;
+  $message = "Ready";
+  if (!$importer->status) {
+    $status = 0;
+    $message = "Disabled";
+  } elseif (empty($importer->template)) {
+    $status = 2;
+    $message = "Template CSV Needed";
+  } elseif (empty($importer->config['mapping'])) {
+    $status = 3;
+    $message = "Field Mapping Needed";
+  }
+
+  return ($return_message) ? $message : $status;
+}
+
+/**
+ * Theme for importer list
+ */
+function theme_mci_importer_list($variables) {
+  $content = $variables['content'];
+  $output = '';
+
+  if ($content) {
+    $output = '<ul class="admin-list">';
+    foreach ($content as $item) {
+      $output .= '<li><span class="label">' . l($item['title'], $item['href'], $item['localized_options']) . '</span>';
+      $output .= '<div class="description">' . filter_xss_admin($item['description']) . '</div></li>';
+    }
+    $output .= '</ul>';
+  }
+  else {
+    $output = '<p>' . t('You have no importers created or set up correctly yet.') . '</p>';
+  }
+  return $output;
+}
+
+function mci_get_sub_folder_names($dir) {
+  $dirs = array();
+
+  foreach (glob($dir.'/*', GLOB_ONLYDIR) as $d) {
+    $dirname = str_replace($dir.'/', '', $d);
+    $dirs["public://$dirname/"] = $dirname;
+  }
+
+  return $dirs;
+}
+
+/**
+ * Imports a row of data based on importer configuration and field mapping
+ * @param  array $row      The row of data to import/update the content from
+ * @param  object $importer The importer object
+ */
+function mci_import_content($row, $importer) {
+  global $user;
+
+  if (empty($row)) {
+    return FALSE;
+  }
+
+  $primary_column = $importer->config['primary_column'];
+  $column_names = $importer->template;
+  $column_mapping = $importer->config['mapping'];
+
+  $content_type = $importer->config['content_type'];
+
+  foreach ($row as $key => $data) {
+    $row[$column_names[$key]] = $data;
+    unset($row[$key]);
+  }
+  if (empty($row[$primary_column]) || empty($column_mapping[$primary_column])) {
+    return FALSE;
+  }
+
+  $fields = field_info_instances('node', $content_type);
+
+  foreach (array_keys($fields) as $field_name) {
+    $fields[$field_name] = $field_name;
+  }
+
+  $extra_fields = array();
+
+  $extra_fields_display = field_info_extra_fields('node', $content_type,'display');
+
+  foreach (array_keys($extra_fields_display) as $key) {
+    if (!in_array($key,array('add_to_cart'))) {
+      $extra_fields[$key] = $key;
+    }
+  }
+
+  $extra_fields_form = field_info_extra_fields('node', $content_type,'form');
+
+  foreach (array_keys($extra_fields_form) as $key) {
+    $extra_fields[$key] = $key;
+  }
+
+  $query = db_select('node','n')->fields('n',array('nid'));
+
+  $primary_field_name = $column_mapping[$primary_column]['field_name'];
+
+  $primary_field_value = $row[$primary_column];
+
+  if ($primary_field_name == 'title') {
+    $query->condition('n'.$primary_field_name, $primary_field_value, 'LIKE');
+  } elseif (in_array($primary_field_name,$extra_fields)) {
+    if (function_exists('uc_product_types')) {
+      $product_types = uc_product_types();
+      if (in_array($content_type,$product_types)) {
+        $query->join('uc_products','p','p.nid = n.nid');
+        $query->condition('p.'.$primary_field_name, $primary_field_value, 'LIKE');
+      }
+    } else {
+      return FALSE;
+    }
+  }
+
+  $nid = $query->execute()->fetchColumn();
+
+  $node = node_load($nid);
+
+  if (empty($node)) {
+    $node = new stdClass();
+    $node->type = $content_type;
+    node_object_prepare($node);
+  }
+
+  $node->language = LANGUAGE_NONE;
+
+  foreach ($column_names as $column_name) {
+    if (!empty($column_mapping[$column_name])) {
+      $field_name = $column_mapping[$column_name]['field_name'];
+      $value = $row[$column_name];
+      if (!empty($value)) {
+        if (in_array($field_name,$extra_fields)) {
+          if ($field_name == 'status') {
+            $value = mci_format_boolean($value, $column_mapping[$column_name]['field_config']);
+          } elseif (in_array($field_name, array('display_price','list_price','sell_price','cost'))) {
+            $value = mci_format_amount($value, $column_mapping[$column_name]['field_config']);
+          } elseif (in_array($field_name, array('dimensions'))) {
+            $value = preg_split('/x/',$value);
+          } elseif (in_array($field_name, array('weight'))) {
+            $value = floatval($value);
+            $node->weight_units = $column_mapping[$column_name]['field_config']['units'];
+          }else {
+            $value = mci_format_text($value, $column_mapping[$column_name]['field_config']);
+          }
+          if (in_array($field_name, array('dimensions'))) {
+            if (is_array($value) && count($value) == 3) {
+              $node->length = floatval($value[0]);
+              $node->width = floatval($value[1]);
+              $node->height = floatval($value[2]);
+              $node->length_units = $column_mapping[$column_name]['field_config']['units'];
+            }
+          } else {
+            $node->{$field_name} = $value;
+          }
+        } else {
+          mci_create_field_value($node, $row[$column_name], $content_type, $field_name, (!empty($column_mapping[$column_name]['field_config'])) ? $column_mapping[$column_name]['field_config'] : array(), $column_mapping, $row);
+        }
+      }
+    }
+  }
+
+  node_save($node);
+
+  return TRUE;
+}
+
+/**
+ * Creates the value field for the node based on the field type
+ * @param  object $node         The node object to put the field value on
+ * @param  string $value        The value of the field
+ * @param  string $content_type The node's content type
+ * @param  string $field_name   The field name
+ * @param  array  $config       The config array
+ * @param  array  $mapping      The mapping array
+ * @param  array  $row          The full import row array
+ */
+function mci_create_field_value(&$node, $value, $content_type, $field_name, $config, $mapping = array(), $row = array()) {
+  $field_info = field_info_field($field_name);
+  $field_info_instance  = field_info_instance('node',$field_name,$content_type);
+
+  $field_value_key = reset(array_keys($field_info['columns']));
+
+  switch ($field_info['type']) {
+    case 'taxonomy_term_reference':
+      if (!empty($mapping[$config['parent_column']]) && $mapping[$config['parent_column']]['field_name'] == $field_name) {
+        $parent_column = (!empty($config['parent_column']) && !empty($row[$config['parent_column']])) ? $row[$config['parent_column']] : array();
+        $parent_column_config = (!empty($mapping[$config['parent_column']])) ? $mapping[$config['parent_column']]['field_config'] : array();
+        $node->{$field_name} = array(
+          LANGUAGE_NONE => mci_process_terms($value,$config,$field_value_key,$parent_column,$parent_column_config),
+        );
+      } else {
+        $node->{$field_name} = array(
+          LANGUAGE_NONE => mci_process_terms($value,$config,$field_value_key),
+        );
+      }
+      break;
+    case 'commerce_price':
+      $node->{$field_name} = array(
+        LANGUAGE_NONE => array(
+          array(
+            $field_value_key => mci_format_amount($value,$config),
+            'currency_code' => $config['currency_code'],
+          ),
+        ),
+      );
+      break;
+    case 'list_boolean':
+      $node->{$field_name} = array(
+        LANGUAGE_NONE => array(
+          array(
+            $field_value_key => mci_format_boolean($value,$config),
+          ),
+        ),
+      );
+      break;
+    case 'image':
+      $image_ids = array();
+      if ($config['exist_method'] == 'append' && !empty($node->{$field_name})) {
+        foreach ($node->{$field_name}[LANGUAGE_NONE] as $image) {
+          $fid = reset($image);
+          $image_ids[$fid] = $fid;
+        }
+      }
+      $values = mci_process_image_field_values($value,$field_name, $content_type, $config, (!empty($config['image_dir'])) ? $config['image_dir'] : "public://",$image_ids);
+      if (!empty($values)) {
+        $node->{$field_name} = $values;
+      }
+      break;
+    case 'text':
+    case 'text_long':
+    case 'text_with_summary':
+      $node->{$field_name} = array(
+        LANGUAGE_NONE => array(
+          array(
+            $field_value_key => mci_format_text($value,$config),
+            'format' => ($field_info_instance['settings']['text_processing'] == 0) ? 'plain_text' : 'filtered_html',
+          ),
+        ),
+      );
+      break;
+    default:
+      $node->{$field_name} = array(
+        LANGUAGE_NONE => array(
+          array(
+            $field_value_key => $value,
+          ),
+        ),
+      );
+      break;
+  }
+}
+
+/**
+ * Processis image importing and creates the array of values
+ * @param  string $value        The value of the field
+ * @param  string $content_type The node's content type
+ * @param  string $field_name   The field name
+ * @param  array  $config       The config array
+ * @param  string $image_dir_uri The image directory uri where the images are stored
+ * @param  array  $image_ids     An array of the current image file ids
+ * @return array                 The array of values
+ */
+function mci_process_image_field_values($value, $field_name, $content_type, $config, $image_dir_uri, $image_ids) {
+  global $user;
+
+  $field_info = field_info_field($field_name);
+  $field_info_instance  = field_info_instance('node',$field_name,$content_type);
+
+  $field_image_dir = "public://".trim($field_info_instance['settings']['file_directory'],'/').'/';
+
+  $field_value_key = reset(array_keys($field_info['columns']));
+
+  $exist_method = (!empty($config['exist_method'])) ? $config['exist_method'] : 'append';
+
+  $values = array();
+
+  $cardinality = $field_info['cardinality'];
+
+  $delimiter = (!empty($config['seperator'])) ? $config['seperator'] : '';
+  if (!empty($delimiter)) {
+    $value = preg_split('/'.addslashes($delimiter).'/',$value);
+  } else {
+    $value = array($value);
+  }
+
+  $new_image_ids = array();
+  if ($cardinality != -1) {
+    $value = array_slice($value, 0,$cardinality);
+  }
+
+  foreach ($value as $image_filename) {
+    $image_filename = trim($image_filename);
+
+    if (!empty($image_filename)) {
+      $image_uri = $image_dir_uri.trim($image_filename);
+      $image_path = drupal_realpath($image_uri);
+
+      if (file_exists($image_path)) {
+        $image_file = new stdClass();
+        $image_file->uri = $image_uri;
+        $image_file->filename = basename($image_path);
+        $image_file->filemime = file_get_mimetype($image_file->uri);
+        $image_file->filesize = filesize($image_path);
+        $image_file->timestamp = REQUEST_TIME;
+        $image_file->uid = $user->uid;
+
+        $fid = db_select('file_managed', 'fm')->fields('fm', array('fid'))->condition('fm.filename',$image_file->filename)->condition('fm.uri',$image_dir_uri.'%','LIKE')->execute()->fetchColumn();
+
+        if (!empty($fid)) {
+          $image_file = file_load($fid);
+        }
+
+        $image_file->status = 0;
+
+        file_save($image_file);
+
+        $log_message .= "Original Image File: <pre>".print_r($image_file,true)."</pre><br /><br />";
+
+        $moved_image_file = file_copy($image_file,$field_image_dir.$image_file->filename,FILE_EXISTS_REPLACE);
+
+        // $moved_fid = db_select('file_managed', 'fm')->fields('fm', array('fid'))->condition('fm.filename',$moved_image_file->filename)->condition('fm.uri',$field_image_dir.'%','LIKE')->execute()->fetchColumn();
+
+        // $moved_uri = $moved_image_file->uri;
+
+        // if (!empty($moved_fid)) {
+        //   $moved_image_file = file_load($moved_fid);
+          
+        //   if ($moved_image_file->uri != $moved_uri) {
+        //     $moved_image_file->uri = $moved_uri;
+
+        //     // $old_fid = db_select('file_managed','fm')->fields('fm',array('fid'))->condition('fm.uri',$moved_image_file->uri)->condition('fm.fid',$moved_image_file->fid,'!=')->execute()->fetchColumn();
+        //     // if (!empty($old_fid)) {
+        //     //   $moved_image_file = file_load($old_fid);
+        //     // }
+        //   }
+        // }
+        // 
+
+        $moved_image_file->status = FILE_STATUS_PERMANENT;
+
+        file_save($moved_image_file);
+
+        if (!empty($moved_image_file->fid)) {
+          $new_image_ids[] = $moved_image_file->fid;
+        }
+      }
+    }
+  }
+
+  if (count($new_image_ids) && count($image_ids) && ($cardinality == 1 || $exist_method == 'replace')) {
+    $image_ids = $new_image_ids;
+  } else {
+    $image_ids += $new_image_ids;
+  }
+
+  foreach ($image_ids as $fid) {
+    $values[] = array(
+      $field_value_key => $fid,
+    );
+  }
+
+  return (!empty($values)) ? array(LANGUAGE_NONE => $values) : array();
+}
+
+/**
+ * Processes and creates terms and builds value array for node
+ * @param  string $value                The value of the field
+ * @param  array  $config               The config array
+ * @param  string $value_key            The value key
+ * @param  string $parent_column        The value of the parent column
+ * @param  array  $parent_column_config The config array for the parent column
+ * @return array                        The array of values
+ */
+function mci_process_terms($value, $config, $value_key = 'tid', $parent_column = '', $parent_column_config = array()) {
+  $value_array = array();
+
+  $vid = $config['vocabulary'];
+  $store_hierarchy = (!empty($config['store_hierarchy']) && $config['store_hierarchy'] == 1);
+
+  $delimiter = (!empty($config['seperator'])) ? $config['seperator'] : '';
+  $hierarchical_delimiter = (!empty($config['hierarchical_seperator'])) ? $config['hierarchical_seperator'] : '';
+
+  if (!empty($parent_column) && !empty($parent_column_config)) {
+    $parent_delimiter = (!empty($parent_column_config['seperator'])) ? $parent_column_config['seperator'] : '';
+    $parent_value = $parent_column;
+    if (!empty($parent_delimiter)) {
+      $parent_value = preg_split('/'.addslashes($parent_delimiter).'/',$parent_value);
+    } else {
+      $parent_value = array($parent_value);
+    }
+  }
+
+  if (!empty($delimiter)) {
+    $value = preg_split('/'.addslashes($delimiter).'/',$value);
+  } else {
+    $value = array($value);
+  }
+
+  if (!empty($parent_value)) {
+    $parent_hierarchical_seperator = $parent_column_config['hierarchical_seperator'];
+    $values = array();
+    foreach ($parent_value as $parent_value_term) {
+      if (!empty($parent_hierarchical_seperator)) {
+        $parent_value_term = preg_split('/'.addslashes($parent_hierarchical_seperator).'/',$parent_value_term);
+      } else {
+        $parent_value_term = array($parent_value_term);
+      }
+      foreach ($value as $value_term) {
+        if (!empty($value_term)) {
+          $parent_value_term = implode($hierarchical_delimiter,$parent_value_term).$hierarchical_delimiter.$value_term;
+        } else {
+          $parent_value_term = implode($hierarchical_delimiter,$parent_value_term);
+        }
+      }
+      $values[] = $parent_value_term;
+    }
+
+    $value = $values;
+  }
+
+  foreach ($value as $value_term) {
+    if (!empty($hierarchical_delimiter)) {
+      $value_term = preg_split('/'.addslashes($hierarchical_delimiter).'/',$value_term);
+    } else {
+      $value_term = array($value_term);
+    }
+    $parent_term = NULL;
+    $num = count($value_term);
+    $count = 0;
+    foreach ($value_term as $term) {
+      $count++;
+      $t = mci_get_term_by_name($term,$vid,(!empty($parent_term)) ? $parent_term->tid : 0);
+
+      if (empty($t)) {
+        $t = new stdClass();
+        $t->name = trim($term);
+        $t->vid = $vid;
+        if (!empty($parent_term)) {
+          $t->parent = $parent_term->tid;
+        }
+        taxonomy_term_save($t);
+      }
+
+      if ($store_hierarchy || $count == $num) {
+        $value_array[] = array(
+          $value_key => $t->{$value_key},
+        );
+      }
+
+      $parent_term = $t;
+    }
+  }
+
+  return $value_array;
+}
+
+/**
+ * Get taxonomy term by name and parent term id
+ * @param  string  $name   The name of the term
+ * @param  integer $vid    The vocabulary id
+ * @param  integer $parent The parent tid
+ * @return object          Taxonomy Term Object
+ */
+function mci_get_term_by_name($name, $vid, $parent = 0) {
+  $query = db_select('taxonomy_term_data', 't')->fields('t',array('tid'));
+  $query->join('taxonomy_term_hierarchy', 'th', 'th.tid = t.tid');
+  $built_query = $query->condition('t.name',trim($name),'LIKE')->condition('t.vid',$vid)->condition('th.parent',$parent)->execute();
+  $tid = $built_query->fetchColumn();
+
+  if (!empty($tid)) {
+    return taxonomy_term_load($tid);
+  }
+
+  return NULL;
+}
+
+/**
+ * Format function for currency
+ * @param  string $amount The amount to format
+ * @param  array  $config The config array
+ * @return float          The formatted amount
+ */
+function mci_format_amount($amount, $config) {
+  $amount_edited = preg_replace('/(\$|,)/', '', $amount);
+  $amount = floatval($amount_edited);
+  if (!empty($config['currency_conversion'])) {
+    switch ($config['currency_conversion']) {
+      case 'dollars_to_pennies':
+        $amount *= 100;
+        break;
+      case 'pennies_to_dollars':
+        $amount /= 100;
+        break;
+    }
+  }
+
+  return $amount;
+}
+
+/**
+ * Format function for text
+ * @param  string $text   The text to format
+ * @param  array  $config The config array
+ * @return string         The formatted text
+ */
+function mci_format_text($text, $config) {
+  if (!empty($config['text_case'])) {
+    switch ($config['text_case']) {
+      case 'upercase':
+        $text = strtoupper($text);
+        break;
+      case 'lowecase':
+        $text = strtolower($text);
+        break;
+      case 'ucwords':
+        $text = ucwords(strtolower($text));
+        break;
+    }
+  }
+
+  return $text;
+}
+
+/**
+ * Format function for booleans
+ * @param  string $value  The text to format
+ * @param  array  $config The config array
+ * @return boolean        The formatted boolean
+ */
+function mci_format_boolean($value, $config) {
+  if (!empty($config['no_match'])) {
+    switch ($config['no_match']) {
+      case 'true':
+        $value = (strtolower(trim($value)) != strtolower(trim($config['false_value'])));
+        break;
+      case 'false':
+        $value = (strtolower(trim($value)) == strtolower(trim($config['true_value'])));
+        break;
+    }
+  }
+
+  return ($value) ? 1 : 0;
+}

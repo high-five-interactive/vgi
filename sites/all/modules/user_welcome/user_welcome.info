@@ -1,0 +1,4 @@
+name = User Welcome Title
+description = User Profile Title welcome message
+package = Other
+core = 7.x

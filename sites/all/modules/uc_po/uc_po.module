@@ -1,0 +1,303 @@
+<?php
+
+/**
+ * Implements hook_uc_payment_method().
+ */
+function uc_po_uc_payment_method() {
+  $methods['purchase_order'] = array(
+    'name'       => t('Purchase Order'),
+    'title'      => t('Purchase Order'),
+    'desc'       => t('Use a purchase order number to make a payment.'),
+    'callback'   => 'uc_payment_method_purchase_order',
+    'weight'     => 10,
+    'checkout'   => FALSE,
+    'no_gateway' => TRUE,
+  );
+
+  return $methods;
+}
+
+/**
+ * Payment method callback for the payment method "Purchase Order".
+ */
+function uc_payment_method_purchase_order($op, &$order, $form = NULL, &$form_state = NULL) {
+  global $user;
+
+  $limit = variable_get('uc_po_max_length', 5);
+
+  if (module_exists('og') && $user->uid > 0) {
+    $groups = og_get_groups_by_user();
+
+    if (!empty($groups['node'])) {
+      foreach ($groups['node'] as $gid) {
+        if (variable_get("uc_po_group_{$gid}_max_length_enabled", 0)) {
+          $limit = variable_get("uc_po_group_{$gid}_max_length", 5);
+          break;
+        }
+      }
+    }
+  }
+
+  switch ($op) {
+    case 'order-view':
+    case 'customer-view':
+      // Fetch the po_number for the payment entered by the administrator.
+      if ($po_number = db_query('SELECT po_number FROM {uc_payment_purchase_order} WHERE order_id = :id', array(':id' => $order->order_id))->fetchField()) {
+        return array('#markup' => t('Purchase Order Number: @desc', array('@desc' => $po_number)));
+      }
+      break;
+
+    case 'cart-review':
+      return array(array('title' => t('Purchase Order Number'),'data' => $order->payment_details['po_number']));
+      break;
+
+    case 'cart-details':
+      $form['pm_po_number'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Purchase Order Number'),
+        '#default_value' => isset($order->payment_details['po_number']) ? $order->payment_details['po_number'] : '',
+        '#size' => $limit + 3,
+        '#maxlength' => $limit,
+        '#required' => TRUE,
+      );
+      return array('pm_po_number' => $form['pm_po_number']);
+      break;
+
+    case 'cart-process':
+    $values = $form_state['values'];
+    if (!empty($values['panes']['payment']['payment_method']) && $values['panes']['payment']['payment_method'] == 'purchase_order') {
+      $details = $values['panes']['payment']['details']['pm_po_number'];
+
+      $order->payment_details['po_number'] = $details;
+    }
+    break;
+
+    case 'order-details':
+      $form['pm_po_number'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Purchase Order Number'),
+        '#default_value' => isset($order->payment_details['po_number']) ? $order->payment_details['po_number'] : '',
+        '#size' => $limit + 3,
+        '#maxlength' => $limit,
+      );
+      return array('pm_po_number' => $form['pm_po_number']);
+      break;
+
+    case 'order-load':
+      $po_number = db_query('SELECT po_number FROM {uc_payment_purchase_order} WHERE order_id = :id', array(':id' => $order->order_id))->fetchField();
+      if (isset($po_number)) {
+        $order->payment_details['po_number'] = $po_number;
+      }
+      break;
+
+    case 'order-save':
+      if (empty($order->payment_details['po_number'])) {
+        db_delete('uc_payment_purchase_order')
+          ->condition('order_id', $order->order_id)
+          ->execute();
+      }
+      else {
+        db_merge('uc_payment_purchase_order')
+          ->key(array(
+            'order_id' => $order->order_id,
+          ))
+          ->fields(array(
+            'po_number' => $order->payment_details['po_number'],
+          ))
+          ->execute();
+      }
+      break;
+    case 'settings':
+      $form['uc_po_max_length'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Purchase Order Max Length'),
+        '#default_value' => variable_get('uc_po_max_length', 5),
+        '#description' => t('The Max Length for the Purchase Order Number. This is the global max length.'),
+      );
+
+      if (module_exists('og')) {
+        $groups = og_get_all_group();
+
+        $form['og_uc_po_length_overrides'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('Group Purchase Order Length Overrides'),
+        );
+
+        $form['og_uc_po_length_overrides']['groups'] = array(
+          '#type' => 'container',
+          '#theme' => 'uc_po_og_length_override_table',
+        );
+
+        foreach ($groups as $gid) {
+          $group = node_load($gid);
+          $form['og_uc_po_length_overrides']['groups'][$gid] = array(
+            '#type' => 'container',
+            "uc_po_group_{$gid}_max_length_enabled" => array(
+              '#type' => 'checkbox',
+              '#default_value' => variable_get("uc_po_group_{$gid}_max_length_enabled", 0),
+              '#title' => $group->title,
+            ),
+            "uc_po_group_{$gid}_max_length" => array(
+              '#type' => 'textfield',
+              '#default_value' => variable_get("uc_po_group_{$gid}_max_length", 5),
+            ),
+          );
+        }
+
+        $group_options = uc_po_get_group_list();
+
+        $enabled_groups = uc_po_get_enabled_group_list();
+
+        $form['uc_po_enabled_groups'] = array(
+          '#type' => 'checkboxes',
+          '#options' => $group_options,
+          '#default_value' => $enabled_groups,
+          '#title' => t('Allow Purchase Order Payments For')
+        );
+      }
+      return $form;
+  }
+}
+
+/**
+ * implements hook_theme().
+ */
+function uc_po_theme() {
+  return array(
+    'uc_po_og_length_override_table' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+function theme_uc_po_og_length_override_table($variables) {
+  $element = $variables['element'];
+
+  $header = array(
+    array('data' => t('Group Name'), 'style' => 'width: 12%;'),
+    array('data' => t('Max Length'), 'style' => 'width: 88%;'),
+  );
+
+  $rows = array();
+
+  foreach (element_children($element) as $gid) {
+    $row = array();
+    foreach (element_children($element[$gid]) as $key) {
+      $row[] = render($element[$gid][$key]);
+    }
+
+    $rows[] = $row;
+  }
+
+  return theme('table',array('header' => $header, 'rows' => $rows, 'empty' => t('No groups available')));
+}
+
+function uc_po_form_alter(&$form, &$form_state, $form_id) {
+
+  if ($form_id == 'uc_cart_checkout_form') {
+    $form['#attached']['js'][] = drupal_get_path('module','uc_po').'/uc_po.js';
+
+    //drupal_set_message("<pre>".print_r($form['panes']['billing'],true)."</pre>");
+    //drupal_set_message("<pre>".print_r($form_state,true)."</pre>");
+    //
+    $weight = 0;
+    foreach (element_children($form['panes']) as $key) {
+      $form['panes'][$key]['#weight'] = $weight;
+      $weight += 10;
+    }
+
+    $payment_method = $form['panes']['payment']['payment_method']['#default_value'];
+
+    //$form['panes']['billing_wrapper_start'] = array('#markup' => "<div id='billing-wrapper'>", "#weight" => $form['panes']['billing']['#weight'] - 0.5);
+    //$form['panes']['billing_wrapper_end'] = array('#markup' => "</div>", "#weight" => $form['panes']['billing']['#weight'] + 0.5);
+    //
+    $form['panes']['billing']['#prefix'] = "<div id='billing-wrapper'>";
+    $form['panes']['billing']['#suffix'] = "</div>";
+
+    if (!empty($form_state['values']) && !empty($form_state['values']['panes']['payment'])) {
+      $payment_method = $form_state['values']['panes']['payment']['payment_method'];
+    }
+
+    if ($payment_method == 'purchase_order') {
+      foreach (element_children($form['panes']['billing']) as $key) {
+        $form['panes']['billing'][$key]['#access'] = FALSE;
+      }
+      $form['panes']['billing']['#type'] = 'container';
+    }
+
+    $form['panes']['payment']['payment_method']['#ajax']['callback'] = 'uc_po_uc_payment_checkout_payment_details';
+  }
+}
+
+/**
+ * AJAX callback for payment method details on the checkout form.
+ */
+function uc_po_uc_payment_checkout_payment_details($form, $form_state) {
+  return array(
+    '#type' => 'ajax',
+    '#commands' => array(
+      ajax_command_replace("#billing-wrapper", render($form['panes']['billing'])),
+      ajax_command_replace("#payment-details", render($form['panes']['payment']['details'])),
+    )
+  );
+}
+
+function uc_po_uc_order($op, $order, $arg2) {
+  switch ($op) {
+    case 'load':
+      break;
+  }
+}
+
+function uc_po_get_enabled_group_list() {
+
+  // Get current list of enabled/disabled groups and make sure values are set correctly
+  $group_list = variable_get('uc_po_enabled_groups',array());
+  foreach ($group_list as $gid => $val) {
+    $group_list[$gid] = (!empty($val)) ? $gid : 0;
+  }
+
+  // Get all groups and add any groups not currently in the list of enabled/disabled groups
+  $groups = og_get_all_group();
+  foreach ($groups as $gid) {
+    if (!isset($group_list[$gid])) {
+      $group_list[$gid] = $gid;
+    }
+  }
+
+  return $group_list;
+}
+
+function uc_po_get_group_list() {
+
+  $group_list = array();
+
+  $groups = og_get_all_group();
+  foreach ($groups as $gid) {
+    $group = node_load($gid);
+    $group_list[$gid] = $group->title;
+  }
+
+  return $group_list;
+}
+
+function uc_po_uc_payment_method_checkout_alter(&$methods, $order) {
+  $enabled = TRUE;
+
+  $enabled_groups = uc_po_get_enabled_group_list();
+
+  $groups = og_get_groups_by_user();
+
+  if (!empty($groups['node'])) {
+    foreach ($groups['node'] as $gid) {
+      if (empty($enabled_groups[$gid])) {
+        $enabled = FALSE;
+        break;
+      }
+    }
+  }
+
+  if (!$enabled) {
+    unset($methods['purchase_order']);
+  }
+}

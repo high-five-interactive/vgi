@@ -1,0 +1,246 @@
+<?php
+
+function og_price_override_get_price_override($nid, $gid, $node = NULL) {
+  $result = db_select('og_price_overrides', 'po')->fields('po', array('price'))->condition('po.entity_id', $nid)->condition('po.gid',$gid)->execute()->fetch();
+
+  $product = (!empty($node)) ? $node : node_load($nid);
+
+  $price = (!empty($result)) ? $result->price : $product->sell_price;
+
+  return number_format($price,2,'.','');
+}
+
+function og_price_override_get_part_number($nid, $gid, $node = NULL) {
+  $result = db_select('og_price_overrides', 'po')->fields('po', array('part_number'))->condition('po.entity_id', $nid)->condition('po.gid',$gid)->execute()->fetch();
+
+  $product = (!empty($node)) ? $node : node_load($nid);
+
+  $part_number = (!empty($result)) ? $result->part_number : "";
+
+  return $part_number;
+}
+
+/**
+ * implements hook_theme().
+ */
+function og_price_override_theme() {
+  return array(
+    'og_price_override_table' => array(
+      'render element' => 'element',
+    ),
+  );
+}
+
+/**
+ * implements hook_form_alter().
+ */
+function og_price_override_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['#node_edit_form']) && !empty($form['#node'])) {
+    $node = $form['#node'];
+    $type = $node->type;
+    if (uc_product_is_product($node)) {
+      if (og_is_group_content_type('node',$type)) {
+        $og_audience_fields = og_get_group_audience_fields('node',$type);
+        
+        if (!empty($og_audience_fields)) {
+          $og_audience_field = reset(array_keys($og_audience_fields));
+          if (!empty($form[$og_audience_field])) {
+            $weight = $form[$og_audience_field]['#weight'];
+            $default_values = (!empty($form[$og_audience_field][LANGUAGE_NONE][0]['default']['#default_value'])) ? $form[$og_audience_field][LANGUAGE_NONE][0]['default']['#default_value'] : array();
+            if (!empty($form[$og_audience_field][LANGUAGE_NONE][0]['admin'])) {
+              foreach ($form[$og_audience_field][LANGUAGE_NONE][0]['admin'] as $extra_groups) {
+                if (!empty($extra_groups['target_id']['#default_value'])) {
+                  preg_match('/\((.*)\)/', $extra_groups['target_id']['#default_value'],$matches);
+                  if (!empty($matches) && !empty($matches[1])) {
+                    $default_values[] = $matches[1];
+                  }
+                }
+              }
+            }
+
+            $form[$og_audience_field]['#access'] = FALSE;
+
+            array_push($form['actions']['submit']['#submit'], 'og_price_override_node_form_submit');
+
+            $groups = og_get_all_group();
+
+            $form['og_price_overrides'] = array(
+              '#type' => 'fieldset',
+              '#tree' => TRUE,
+              '#weight' => $weight + 1,
+              '#title' => t('Group Visibility & Price Overrides'),
+              '#description' => t('Select which groups this content is visible to. When no group is selected, it will be visible to all groups.<br />&nbsp;'),
+            );
+
+            $form['og_price_overrides']['groups'] = array(
+              '#type' => 'container',
+              '#theme' => 'og_price_override_table',
+            );
+
+            foreach ($groups as $gid) {
+              $group = node_load($gid);
+              $form['og_price_overrides']['groups'][$gid] = array(
+                '#type' => 'container',
+                'enabled' => array(
+                  '#type' => 'checkbox',
+                  '#default_value' => in_array($gid,$default_values),
+                  '#title' => $group->title,
+                ),
+                'part_number' => array(
+                  '#type' => 'textfield',
+                  '#size' => 10,
+                  '#default_value' => og_price_override_get_part_number((isset($node->nid) ? $node->nid : 0),$gid,$node),
+                ),
+                'price_override' => array(
+                  '#type' => 'textfield',
+                  '#size' => 10,
+                  '#field_prefix' => '$',
+                  '#default_value' => og_price_override_get_price_override((isset($node->nid) ? $node->nid : 0),$gid,$node),
+                ),
+              );
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+function og_price_override_node_form_submit($form, &$form_state) {
+  $values = $form_state['values'];
+
+  $node = $form_state['node'];
+
+  if (!empty($values['og_price_overrides']) && !empty($values['og_price_overrides']['groups'])) {
+    $og_audience_fields = og_get_group_audience_fields('node',$values['type']);
+    $og_audience_field = reset(array_keys($og_audience_fields));
+
+    $audience_value = array(LANGUAGE_NONE => array());
+
+    foreach ($values['og_price_overrides']['groups'] as $gid => $value) {
+      if ($value['enabled'] == 1) {
+        $audience_value[LANGUAGE_NONE][] = array('target_id' => $gid);
+        $value['price_override'] = preg_replace('/(\$|,)/','',$value['price_override']);
+        $price_override = number_format($value['price_override'],2,'.','');
+        $sell_price = number_format($node->sell_price,2,'.','');
+        if($price_override != $sell_price || !empty($value['part_number'])) {
+          og_price_override_save_price_override($node->nid,$gid, $price_override, $value['part_number']);
+        } else {
+          og_price_override_remove_price_override($node->nid,$gid);
+        }
+      } else {
+        og_price_override_remove_price_override($node->nid,$gid);
+      }
+    }
+
+    $node->{$og_audience_field} = $audience_value;
+
+    node_save($node);
+  }
+}
+
+function og_price_override_save_price_override($entity_id, $gid, $price, $part_number = '') {
+  $record = db_select('og_price_overrides', 'po')->fields('po')->condition('po.entity_id', $entity_id)->condition('po.gid',$gid)->execute()->fetch();
+
+  $keys = array();
+
+  if (empty($record)) {
+    $record = new stdClass();
+    $record->entity_id = $entity_id;
+    $record->gid = $gid;
+  } else {
+    $keys[] = 'id';
+  }
+
+  $record->price = number_format($price,2,'.','');
+
+  $record->part_number = $part_number;
+
+  drupal_write_record('og_price_overrides', $record, $keys);
+
+}
+
+function og_price_override_remove_price_override($entity_id, $gid) {
+  db_delete('og_price_overrides')->condition('entity_id', $entity_id)->condition('gid',$gid)->execute();
+}
+
+function theme_og_price_override_table($variables) {
+  $element = $variables['element'];
+
+  $header = array(
+    array('data' => t('Group Name'), 'style' => 'width: 12%;'),
+    array('data' => t('Group Part Number'), 'style' => 'width: 20%;'),
+    array('data' => t('Price Override'), 'style' => 'width: 68%;'),
+  );
+
+  $rows = array();
+
+  foreach (element_children($element) as $gid) {
+    $row = array();
+    foreach (element_children($element[$gid]) as $key) {
+      $row[] = render($element[$gid][$key]);
+    }
+
+    $rows[] = $row;
+  }
+
+  return theme('table',array('header' => $header, 'rows' => $rows, 'empty' => t('No groups available')));
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function og_price_override_node_view($node) {
+  global $user;
+
+  if ($user->uid > 0 && uc_product_is_product($node)) {
+    $groups = og_get_groups_by_user();
+    $price = number_format($node->sell_price,2);
+    foreach ($groups['node'] as $gid) {
+      $price_override = number_format(og_price_override_get_price_override($node->nid,$gid,$node),2,'.','');
+
+      if ($price != $price_override) {
+        $price = $price_override;
+        break;
+      }
+    }
+
+    if (!empty($node->data) && is_array($node->data) && !empty($node->data['attributes'])) {
+      foreach ($node->data['attributes'] as $aid => $oid) {
+        $option = uc_attribute_subject_option_load($oid,'product',$node->nid);
+        $option_price = $option->price;
+        $price = number_format($price + $option_price,2);
+      }
+    }
+
+    $node->content['sell_price']['#value']    = $price;
+    $node->content['display_price']['#value'] = $price;
+  }
+}
+
+/**
+ * Implements hook_node_load().
+ */
+function og_price_override_node_load($nodes, $types) {
+  global $user;
+
+  if ($user->uid > 0) {
+    $groups = og_get_groups_by_user();
+    if (!empty($groups['node'])) {
+      foreach ($nodes as $nid => $node) {
+        if (uc_product_is_product($node)) {
+          $price = number_format($node->price,2,'.','');
+          foreach ($groups['node'] as $gid) {
+            $price_override = number_format(og_price_override_get_price_override($node->nid,$gid,$node),2,'.','');
+
+            if ($price != $price_override) {
+              $price = $price_override;
+              break;
+            }
+          }
+          $nodes[$nid]->price = $price;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+name = Purchase Order
+description = Purchase order payment methods for Ubercart
+package = Ubercart - payment
+core = 7.x
+dependencies[] = uc_payment

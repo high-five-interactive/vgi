@@ -1,0 +1,6 @@
+name = OG Credit Limitations
+description = Allow OG Overrides to disable/enable credit card payments based on group
+package = Ubercart - payment
+core = 7.x
+dependencies[] = uc_payment
+dependencies[] = og

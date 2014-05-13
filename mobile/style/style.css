@@ -1,0 +1,409 @@
+/* CSS Document */
+
+/**book对象*/
+.flipBook{
+	position:absolute;
+	top:20px;
+	left:20px;
+	width:800px;
+	height:600px;
+	/*background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(0,0,255,0.2)), to(rgba(255,0,0,0.8)));
+	background-image:-webkit-linear-gradient(left,rgba(123,123,123,0) 0%, rgba(33,33,33,0.3) 30%,rgba(123,123,123,0) 100%);	
+	/*overflow: hidden;*/
+}
+.zoomBook{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:800px;
+	height:600px;
+}
+.zoomPage{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:800px;
+	height:600px;
+}
+.zoomSide{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:800px;
+	height:600px;
+}
+.bookStage{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width: 1440px;
+	height: 740px;
+	
+	display:block;
+	overflow:hidden;/**/
+}
+
+.image{
+	width:640px;
+	height:920px;
+	top:1px;
+	left:1px;
+	/*-webkit-transform-origin:0% 0%;
+	-webkit-transform:scale3d(1,1,1); */
+}
+
+/**page对象*/
+.paper{
+	position:absolute;
+	top:0px;
+	left:320px;
+	width:320px;
+	height:460px;
+	
+	/*background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(255,255,0,0.2)), to(rgba(0,255,111,0.8)));*/	
+}
+
+/**side对象*/
+.side{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+	background-color: #eeeeee;
+	-webkit-box-shadow: 0 0 10px rgba(40, 0, 0, 0.5);
+	/*background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(255,0,0,0.2)), to(rgba(0,255,0,0.8)));
+	-webkit-transform-origin: 0% 0%;
+	-webkit-transform: rotateZ(-60deg);*/
+	
+}
+
+.backShadow{
+	position: absolute;
+	top:0px;
+	left:0px;
+	width: 320px;
+	height:460px;
+	overflow: hidden;
+}
+
+.frontShadow{
+	position: absolute;
+	top:0px;
+	left:0px;
+	width: 320px;
+	height:460px;
+	overflow: hidden;
+}
+
+/***/
+.sideBackground{
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+	
+}
+
+/**side的内容，就是图片或swf*/
+.sideContent{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+	-webkit-transform-origin: 0% 0%;
+	/*	-webkit-transform: scale3d(1,1,0);
+	-webkit-transform: scaleY(1);
+	-webkit-transform: scaleZ(0);*/
+}
+
+/**书两页中间的阴影*/
+/*左阴影，阴影从左到右渐渐变浓*/
+.leftShadow{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 50px;
+	height: 460px;
+	/*background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(0,0,255,0.2)), to(rgba(255,0,0,0.8)));*/
+	background-image: -webkit-gradient(linear,0% 0%, 100% 0%, from(rgba(123,123,123,0.005)), to(rgba(63,63,63,0.6)));
+	background-image: -moz-linear-gradient(left,rgba(123,123,123,0),rgba(63,63,63,0.8));
+	/*background-image: -ms-linear-gradient(top left,rgba(123,123,123,0),rgba(63,63,63,0.8));*/
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, EndColorStr='#cc3f3f3f', StartColorStr='#007b7b7b');
+}
+
+/**右阴影，阴影从右到左渐渐变浓*/
+.rightShadow{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 50px;
+	height: 460px;
+	/*background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(0,0,255,0.2)), to(rgba(255,0,0,0.8)));*/
+	background-image: -webkit-gradient(linear,0% 0%, 100% 0%, from(rgba(63,63,63,0.6)), to(rgba(123,123,123,0.005)));
+	background-image: -moz-linear-gradient(left,rgba(63,63,63,0.8),rgba(123,123,123,0));
+	/*background-image: -ms-linear-gradient(top left,rgba(63,63,63,0.8),rgba(123,123,123,0));*/
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, EndColorStr='#007b7b7b', StartColorStr='#cc3f3f3f');
+}
+
+/**从右向左翻，翻动面的阴影*/
+.shadowA{
+	background-image:-webkit-linear-gradient(left,rgba(123,123,123,0.05) 0%, rgba(63,63,63,0.4) 93%, rgba(123,123,123,0) 100%);
+	background-image:-moz-linear-gradient(left,rgba(123,123,123,0.05) 0%, rgba(63,63,63,0.4) 93%, rgba(123,123,123,0) 100%);
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, EndColorStr='#663f3f3f', StartColorStr='#007b7b7b');
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+}
+
+/**从右向左翻，不翻动页的阴影*/
+.shadowD{
+	background-image:-webkit-linear-gradient(left,rgba(123,123,123,0) 0%, rgba(63,63,63,0.8) 30%,rgba(123,123,123,0) 100%);
+	background-image:-moz-linear-gradient(left,rgba(123,123,123,0) 0%, rgba(63,63,63,0.8) 30%,rgba(123,123,123,0) 100%);
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, EndColorStr='#007b7b7b', StartColorStr='#663f3f3f');
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+}
+
+/**从左向右翻，翻动页的阴影*/
+.shadowC{
+	background-image:-webkit-linear-gradient(left,rgba(123,123,123,0.1) 0%, rgba(63,63,63,0.4) 7%, rgba(123,123,123,0) 100%);
+	background-image:-moz-linear-gradient(left,rgba(123,123,123,0.1) 0%, rgba(63,63,63,0.4) 7%, rgba(123,123,123,0) 100%);
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, EndColorStr='#007b7b7b', StartColorStr='#663f3f3f');
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+}
+
+/**从左向右翻，不翻动页的阴影*/
+.shadowB{
+	background-image:-webkit-linear-gradient(left,rgba(123,123,123,0) 0%, rgba(63,63,63,0.8) 70%,rgba(123,123,123,0) 100%);
+	background-image:-moz-linear-gradient(left,rgba(123,123,123,0) 0%, rgba(63,63,63,0.8) 70%,rgba(123,123,123,0) 100%);
+	filter:progid:DXImageTransform.Microsoft.Gradient(GradientType=1, EndColorStr='#63f3f3f', StartColorStr='#007b7b7b');
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+}
+
+.kong{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:100px;
+	height:100px;
+}
+
+/**side的阴影
+.sideShadow{
+	background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(0,0,0,0)), to(rgba(0,0,0,1)));
+	display:none;
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+}*/
+
+/**阴影遮罩**/
+.shadowMask{
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+	overflow: hidden;
+	
+}
+
+/*side 的位置，因为safari浏览器的-webkit-transform-origin的问题，
+ 做成一个对象定位，它的子对象旋转*/
+.sidePosition{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+}
+
+.singleShadow{
+	position: absolute;
+	top: 0px;
+	left:0px;
+	width:320px;
+	height:460px;
+	background-color:#888888;
+	opacity: 0.5;
+	display: none;
+}
+/**阴影的遮罩
+.shadowMask{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:460px;
+	overflow: hidden;
+	background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(0,0,0,0.4)), to(rgba(0,0,0,0.7)));
+}*/
+
+/**side的遮罩*/
+.pageMask{
+	position:inherit;
+	top:0px;
+	left:0px;
+	width:320px;
+	height:860px;
+	overflow: hidden;
+	/*background-image:-webkit-gradient(linear, 0% 0%, 100% 0%, from(rgba(255,122,0,0.1)), to(rgba(0,0,255,0.5)));*/
+}
+
+.thumbBar{
+	bottom:-120px;
+	left:0px;
+	right:0px;
+	position:absolute;
+	height:110px;
+	z-index:2001;
+}
+
+.thumbBG{
+	position:absolute;
+	top:10px;
+	left:0px;
+	right:0px;
+	height: 100px;
+	overflow:hidden;
+	background-color: #222222;
+	opacity: 0.8;
+}
+
+.thumbBox{
+	position:absolute;
+	top:2px;
+	left:0px;
+	right:0px;
+	height: 70px;
+}
+
+.thumbItem{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 60px;
+	height: 82px;
+	border-width: 1px;
+	border-style:inset;
+	border-color: #aaaaaa;
+}
+
+.scrollButton{
+	position: absolute;
+	top: 15px;
+	width: 40px;
+	height: 70px;
+}
+
+.shareBar{
+	position: absolute;
+	width: 135px;
+	height: 220px;
+	background-color: #6a7882;
+	opacity: 0.8;
+	overflow:hidden;
+}
+
+.shareButton{
+	position: absolute;
+	width:133px;
+	height:30px;
+}
+
+.shareImg{
+	width:22px;
+	height:22px;
+}
+
+.adsBar{
+	position: absolute;
+	width: 200px;
+	height: 100px;
+	overflow: hidden;
+}
+
+.bottom.right, .bottom.right button, .bottom.right .numbering{
+  position: absolute; 
+  top: 2px;
+  left: auto; }
+  a ,button{
+   cursor: pointer;
+  }
+  .bottom.right{
+  	 padding-right: 10px;
+  }
+	.fbToolBar{
+	
+    overflow: hidden;
+    position: absolute;
+    z-index: 2000;
+   
+    
+ 	bottom: 0px;
+  	left: 0px;
+ 	right: 0px;
+ 	
+  	height: 42px;
+  	
+  	
+  	/**
+  	  	
+  	 border-left-width: 0;
+    border-right-width: 0;
+  	  text-shadow: 0 -1px 1px #000000;
+	font-family: Verdana,sans-serif;
+  	 font-size: 12px;
+  	 color: white; 	
+  	 background-color: #111111;*/
+  
+ /* background: gradient(linear, left top, left bottom, from(#333333), to(black));
+  background: -webkit-gradient(linear, left top, left bottom, from(#333333), to(black));
+  background: -moz-linear-gradient(top, #333333, black);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333', endColorstr='black');
+  -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333', endColorstr='black');	*/
+  	opacity: 0.95;
+	}
+	.fbToolBar button {
+    width: 45px;
+    height: 33px;
+    padding: 2px;
+    /*  margin: 1px 0 0 3px;
+    border-top: 1px solid #8c8c8c;
+    border-bottom: 1px solid #333333;
+    border-left: 1px solid #666666;
+    border-right: 1px solid #404040;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    background-color: #404040;
+   background: gradient(linear, left top, left bottom, from(#4d4d4d), to(#333333));
+    background: -webkit-gradient(linear, left top, left bottom, from(#4d4d4d), to(#333333));
+    background: -moz-linear-gradient(top, #4d4d4d, #333333);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4d4d4d', endColorstr='#333333');
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4d4d4d', endColorstr='#333333'); */
+	}
+	.numbering, .numbering span {
+    color: #999999 !important;
+}
+.numbering{
+	bottom: 3px;
+}

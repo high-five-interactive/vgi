@@ -1,0 +1,45 @@
+<?php
+
+
+function user_welcome_profile_title() {
+  global $user;
+
+  if ($user->uid > 0) {
+    $title = user_welcome_get_message();
+
+    return $user->name;
+  } else {
+    return 'User account';
+  }
+}
+
+function user_welcome_preprocess_page(&$variables) {
+  global $user;
+  if ($user->uid > 0 && (!empty($_GET['q'])) && $_GET['q'] == 'user/'.$user->uid) {
+    $variables['title'] = user_welcome_get_message();
+  }
+}
+
+function user_welcome_get_message() {
+  global $user;
+
+  $title = "Welcome back, !name.";
+
+  $args = array('!name' => $user->name);
+
+  if (module_exists('og')) {
+    $groups = og_get_groups_by_user();
+    $group_message = "To view and purchase approved fire and safety products for !group please click the Products link at the top of the page.";
+
+    if (!empty($groups['node'])) {
+      $gid = reset($groups['node']);
+      $group = node_load($gid);
+
+      $title .= " ".$group_message;
+
+      $args['!group'] = $group->title;
+    }
+  }
+
+  return t($title,$args);
+}

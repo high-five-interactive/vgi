@@ -1,0 +1,5 @@
+name = OG Price Override Import
+description = "Allows Importing of Price Overrides for products based on group"
+package = "Boss Creative"
+dependencies[] = og_price_override
+core = 7.x

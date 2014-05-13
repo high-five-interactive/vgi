@@ -1,0 +1,150 @@
+// @file
+// Custom sass mixins
+//
+// Define the custom mixins for your project here.
+// http://sass-lang.com/docs/yardoc/file.SASS_REFERENCE.html#defining_a_mixin
+
+// Makes an element visually hidden, but accessible.
+// @see http://snook.ca/archives/html_and_css/hiding-content-for-accessibility
+@mixin element-invisible {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  @if $legacy-support-for-ie6 or $legacy-support-for-ie7 {
+    clip: rect(1px 1px 1px 1px); // IE6 and IE7 use the wrong syntax.
+  }
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+// Turns off the element-invisible effect.
+@mixin element-invisible-off {
+  position: static !important;
+  clip: auto;
+  height: auto;
+  width: auto;
+  overflow: auto;
+}
+
+// Makes an element visually hidden by default, but visible when focused.
+@mixin element-focusable {
+  @include element-invisible;
+
+  &:active,
+  &:focus {
+    @include element-invisible-off;
+  }
+}
+
+@mixin base-button {
+  padding: 11/16*1em 42/16*1em;
+  border-radius: 3px;
+  transition: all .1s ease-in-out;
+  text-shadow: 0 0 0 transparent;
+}
+
+@mixin question-answer-before {
+  font-size: 14/16*1em;
+  position: absolute;
+  left: 0;
+  box-sizing: border-box;
+  border-radius: 20px;
+  border: 1px solid $color-black;
+}
+
+@mixin accordion-title {
+  font-family: $font-droidsans;
+  font-size: 16/16*1em;
+  line-height: 18/16*1em;
+  color: $color-black;
+  border-bottom: 1px solid $color-light-gray;
+  box-sizing: border-box;
+  padding: 20/16*1em 12/16*1em;
+  font-weight: 700;
+  position: relative;
+  margin-top: -1px;
+  margin-bottom: 0;
+  background-color: #f8f8f8;
+
+  .expand-accordion {
+    @include accordion-button;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:first-of-type {
+    border-top: 1px solid $color-light-gray;
+  }
+}
+
+@mixin accordion-button {
+  content: "+";
+  position: absolute;
+  width: 32/16*1rem;
+  height: 32/16*1rem;
+  font-size: 38/16*1em;
+  color: $color-white;
+  background-color: $color-blue;
+  border-radius: 25px;
+  box-sizing: border-box;
+  padding: 7/16*1rem 0 0 5/16*1rem;
+  right: 12/16*1rem;
+  top: 12/16*1rem;
+
+  &.close {
+    content: "x";
+    font-size: 28/16*1em;
+    padding: 6/16*1rem 0 0 8/16*1rem;
+  }
+}
+
+@mixin accordion-content {
+  height: 0px;
+  overflow: hidden;
+  box-sizing: border-box;
+
+  &.no-js,
+  &.show {
+    height: auto;
+    padding-top: 20/16*1em;
+  }
+}
+
+@mixin blue-button {
+  font-size: 14/16*1em;
+  font-family: $font-droidsans;
+  color: $color-white;
+  padding: 8/14*1em 40/14*1em;
+  border-radius: 4px;
+  background-color: #005397;
+  box-shadow: 0 4px #00214b;
+  border: 0;
+
+  &:hover {
+    background-color: $color-blue;
+  }
+}
+
+$sprites: sprite-map("sprites/*.png", $spacing: 15px);
+$sprites_retina: sprite-map("sprites2x/*.png", $spacing: 30px);
+
+@mixin sprite-background($name) {
+  background-image: sprite-url($sprites);
+  background-position: sprite-position($sprites, $name);
+  background-repeat: no-repeat;
+  display: block;
+  height: image-height(sprite-file($sprites, $name));
+  width: image-width(sprite-file($sprites, $name));
+  @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+    // Workaround for https://gist.github.com/2140082
+    @if (sprite-position($sprites, $name) != sprite-position($sprites_retina, $name)) {
+      $ypos: round(nth(sprite-position($sprites_retina, $name), 2) / 2);
+      background-position: 0 $ypos;
+    }
+    // Hard coded width of the normal sprite image. There must be a smarter way to do this.
+    @include background-size($normal-sprite-width auto);
+    background-image: sprite-url($sprites-retina);
+  }
+}

@@ -1,0 +1,64 @@
+<?php
+
+/**
+ *Implements hook_schema().
+ */
+function og_price_override_schema() {
+  $schema = array();
+
+  $schema['og_price_overrides'] = array(
+    'description' => 'Stores all the price overrides.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The internal identifier for the price override.',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'entity_id' => array(
+        'description' => 'The entity\'s id for the price override.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'gid' => array(
+        'description' => 'The gid for the group',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'price' => array(
+        'description' => 'The price override price',
+        'type' => 'numeric',
+        'not null' => TRUE,
+        'precision' => 10,
+        'scale' => 2,
+        'default' => 0,
+      ),
+      'part_number' => array(
+        'description' => 'The group part number',
+        'type' => 'varchar',
+        'length' => '255',
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('id'),
+    'foreign keys' => array(
+      'entity_id' => array(
+        'table' => 'node',
+        'columns' => array('entity_id' => 'nid'),
+      ),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Adds group part number field to database
+ */
+function og_price_override_update_7001() {
+  $schema = og_price_override_schema();
+
+  if (!db_field_exists('og_price_overrides','part_number')) {
+    db_add_field('og_price_overrides','part_number',$schema['og_price_overrides']['fields']['part_number']);
+  }
+}
