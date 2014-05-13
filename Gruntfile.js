@@ -41,7 +41,9 @@ module.exports = function (grunt) {
       },
       target: {
         expand: true,
-        src: 'css/*.css',
+        cwd: 'src/css/',
+        src: ['*.css'],
+        dest: 'css/',
       },
     },
 
@@ -49,9 +51,7 @@ module.exports = function (grunt) {
     cssmin: {
       minify: {
         expand: true,
-        cwd: 'css/',
-        src: ['*.css'],
-        dest: 'css/',
+        src: 'css/*.css',
       }
     },
 
@@ -81,7 +81,7 @@ module.exports = function (grunt) {
         tasks: ['uglify'],
       },
        css: {
-         files: ['css/**/*.css'],
+         files: ['src/css/**/*.css'],
          tasks: ['autoprefixer','cssmin'],
 
        },
@@ -89,7 +89,7 @@ module.exports = function (grunt) {
       // using browser extension: http://feedback.livereload.com/knowledgebase/articles/86242-how-do-i-install-and-use-the-browser-extensions-
       livereload: {
         files: [
-          'sass/**/*.scss',
+          'css/**/*.css',
           'js/*.js',
           'images/{,**/}*.{png,jpg,jpeg,gif,webp,svg}'
         ],
