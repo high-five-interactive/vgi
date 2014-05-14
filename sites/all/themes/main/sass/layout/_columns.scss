@@ -1,7 +1,9 @@
 .no-sidebars {
   #top-bar-inner,
   #header-inner,
-  #content,
+  #content-inner,
+  .breadcrumb ol,
+  .region-sub-footer,
   #footer {
     padding: 6/16*1em $gutter_mobile;
     max-width: $media_atat;
@@ -14,5 +16,9 @@
     @media all and (min-width: $media_vader) {
       padding: 6/16*1em $gutter_desktop;
     }
+  }
+
+  .breadcrumb ol {
+
   }
 }
