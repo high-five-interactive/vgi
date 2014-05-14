@@ -1,0 +1,71 @@
+.block.menu-button {
+  float: right;
+  a.menu-button {
+    @include sprite-background(menu-button);
+  }
+}
+
+.primary-navigation {
+  clear: both;
+  background-color: $color_light_gray;
+  border-radius: 8/16*1em;
+  margin-bottom: 9/16*1em;
+
+  > .menu-block-wrapper > .menu-wrapper {
+    > ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      > li {
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        a {
+          font-size: 1em;
+          display: block;
+          text-decoration: none;
+          text-transform: uppercase;
+          border-bottom: 1px solid $color_lighter_blue;
+          color: $color_blue;
+          padding: 14/16*1em;
+          line-height: 1.1em;
+        }
+
+        &:last-child a {
+          border-bottom: none;
+        }
+
+        > .menu-wrapper > ul {
+          background-color: $color_lighter_blue;
+
+          > li {
+            display: block;
+            margin: 0;
+            padding: 0;
+
+            > a {
+              padding-left: 24/16*1em;
+              border-bottom: 1px solid $color_light_gray;
+            }
+
+            > .menu-wrapper > ul {
+              background-color: $color_blue;
+
+              > li {
+                display: block;
+                margin: 0;
+                padding: 0;
+
+                a {
+                  color: $color_light_gray;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

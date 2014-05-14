@@ -80,16 +80,15 @@ $tahoma:          Tahoma, Verdana, "DejaVu Sans", sans-serif;
 $helvetica:       Helvetica, Arial, "Nimbus Sans L", sans-serif;
 $arial:           Arial, Helvetica, "Nimbus Sans L", sans-serif;
 
-$font_play: 'Play', sans-serif;
-$font_tit: 'Titillium Web', sans-serif;
+$font_opensans: 'Open Sans', Arial, sans-serif;
 
 // For an explanation of why "sans-serif" is at the end of this list, see
 // http://meyerweb.com/eric/thoughts/2010/02/12/fixed-monospace-sizing/
 $courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
 
 // Now create some variables for the font stacks we want to use on this site.
-$base-font-family : $font_tit; // The font family set on the html element.
-$font-body        : $font_tit;
+$base-font-family : $font_opensans; // The font family set on the html element.
+$font-body        : $font_opensans;
 $font-monospace   : $courier;
 
 //
@@ -118,9 +117,12 @@ $media_deathstar_max:   1599/16*1em;
 // Colors, etc.
 //
 
-$color_white:      #ffffff;
-$color_blue:       #1e417d;
-$color_light_blue: #3a8edb;
+$color_white        : #ffffff;
+$color_light_gray   : #f2f3f5;
+$color_blue         : #1e417d;
+$color_light_blue   : #3a8edb;
+$color_lighter_blue : #c6daeb;
+$color_dark_blue    : #0f1534;
 
 // The amount lists, blockquotes and comments are indented.
 $indent-amount: 30px;

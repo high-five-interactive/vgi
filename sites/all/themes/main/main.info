@@ -70,12 +70,10 @@ scripts[] = js/script.js
 
 
 ; Fonts
-fonts[google_fonts_api][] = "Play&subset=latin#700"
-fonts[google_fonts_api][] = "Play&subset=latin#regular"
-fonts[google_fonts_api][] = "Titillium Web&subset=latin#regular"
-fonts[google_fonts_api][] = "Titillium Web&subset=latin#700"
-fonts[google_fonts_api][] = "Titillium Web&subset=latin#700italic"
-fonts[google_fonts_api][] = "Titillium Web&subset=latin#italic"
+fonts[google_fonts_api][] = "Open Sans&subset=latin#700"
+fonts[google_fonts_api][] = "Open Sans&subset=latin#700italic"
+fonts[google_fonts_api][] = "Open Sans&subset=latin#italic"
+fonts[google_fonts_api][] = "Open Sans&subset=latin#regular"
 
 
 
