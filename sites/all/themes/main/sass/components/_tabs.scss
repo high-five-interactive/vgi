@@ -1,0 +1,9 @@
+.tabs-primary {
+  li {
+    list-style: none;
+    display: inline-block;
+    a {
+      @include button-base;
+    }
+  }
+}

@@ -117,16 +117,22 @@ $media_deathstar_max:   1599/16*1em;
 // Colors, etc.
 //
 
+<<<<<<< HEAD
 $color_white        : #ffffff;
 $color_light_gray   : #f2f3f5;
-$color_gray         : #c2c3c7;
-$color_dark_gray    : #a1a1a1;
 $color_blue         : #1e417d;
 $color_light_blue   : #3a8edb;
 $color_lighter_blue : #c6daeb;
 $color_dark_blue    : #0f1534;
+=======
+$color_white:        #ffffff;
+$color_gray:         #c2c3c7;
+$color_blue:         #1e417d;
+$color_dark_blue:    #181e3e;
+$color_light_blue:   #3a8edb;
 $color_orange:       #f56110;
 $color_light_orange: #ff6f20;
+>>>>>>> f979d9c75c7dceac14ad1fa5811c0ba408e7b7ca
 
 // The amount lists, blockquotes and comments are indented.
 $indent-amount: 30px;
