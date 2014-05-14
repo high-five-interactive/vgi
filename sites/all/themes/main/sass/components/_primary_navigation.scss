@@ -1,5 +1,8 @@
 .block.menu-button {
   float: right;
+  margin-top: 17/16*1em;
+  margin-right: 10/16*1em;
+
   a.menu-button {
     @include sprite-background(menu-button);
   }
@@ -7,9 +10,14 @@
 
 .primary-navigation {
   clear: both;
-  background-color: $color_light_gray;
-  border-radius: 8/16*1em;
-  margin-bottom: 9/16*1em;
+  position: relative;
+  top: 4/16*1em;
+  margin-bottom: 13/16*1em;
+  display: none;
+
+  &.open {
+    display: block;
+  }
 
   > .menu-block-wrapper > .menu-wrapper {
     > ul {
@@ -31,14 +39,31 @@
           color: $color_blue;
           padding: 14/16*1em;
           line-height: 1.1em;
+          background-color: $color_light_gray;
+
+          &:hover {
+            background-color: $color_blue !important;
+            color: $color_light_gray !important;
+          }
+        }
+
+        &:first-child a {
+          border-radius: 8/16*1em 8/16*1em 0 0;
         }
 
         &:last-child a {
           border-bottom: none;
+          border-radius: 0 0 8/16*1em 8/16*1em;
+        }
+
+        &:hover {
+          > .menu-wrapper > ul {
+            display: block;
+          }
         }
 
         > .menu-wrapper > ul {
-          background-color: $color_lighter_blue;
+          display: none;
 
           > li {
             display: block;
@@ -48,18 +73,27 @@
             > a {
               padding-left: 24/16*1em;
               border-bottom: 1px solid $color_light_gray;
+              background-color: darken($color_light_gray, 10%);
+            }
+
+            &:hover {
+              > .menu-wrapper > ul {
+                display: block;
+              }
             }
 
             > .menu-wrapper > ul {
-              background-color: $color_blue;
+              display: none;
 
               > li {
                 display: block;
                 margin: 0;
                 padding: 0;
 
-                a {
-                  color: $color_light_gray;
+                > a {
+                  background-color: darken($color_light_gray, 20%);
+                  padding-left: 36/16*1em;
+                  border-bottom: 1px solid $color_light_gray;
                 }
               }
             }
