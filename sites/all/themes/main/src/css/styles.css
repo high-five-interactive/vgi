@@ -572,17 +572,26 @@ table {
 .no-sidebars #header-inner,
 .no-sidebars #content,
 .no-sidebars #footer {
-  padding: 0.375em 1em;
+  padding: 0.375em 1.125em;
   max-width: 75em;
   margin: 0 auto;
 }
-@media all and (min-width: 75em) {
+@media all and (min-width: 37.5em) {
   /* line 5, ../../sass/layout/_columns.scss */
   .no-sidebars #top-bar-inner,
   .no-sidebars #header-inner,
   .no-sidebars #content,
   .no-sidebars #footer {
-    padding: 0.375em 0;
+    padding: 0.375em 1.5em;
+  }
+}
+@media all and (min-width: 53.75em) {
+  /* line 5, ../../sass/layout/_columns.scss */
+  .no-sidebars #top-bar-inner,
+  .no-sidebars #header-inner,
+  .no-sidebars #content,
+  .no-sidebars #footer {
+    padding: 0.375em 2.25em;
   }
 }
 
@@ -651,10 +660,28 @@ ul {
 #footer-wrapper {
   background: #1e417d url("../images/pattern-bg.png") repeat top left;
 }
-/* line 7, ../../sass/components/_footer.scss */
+@media all and (min-width: 37.5em) {
+  /* line 6, ../../sass/components/_footer.scss */
+  #footer-wrapper .menu-block-wrapper ul li {
+    display: inline-block;
+    margin-right: 1.25em;
+  }
+}
+/* line 12, ../../sass/components/_footer.scss */
 #footer-wrapper .menu-block-wrapper ul li a {
   font-size: 0.875em;
+  text-transform: uppercase;
+  text-decoration: none;
   color: white;
+}
+/* line 18, ../../sass/components/_footer.scss */
+#footer-wrapper .menu-block-wrapper ul li a:hover {
+  color: #c2c3c7;
+}
+/* line 26, ../../sass/components/_footer.scss */
+#footer-wrapper .copyright {
+  font-size: 0.625em;
+  color: #c2c3c7;
 }
 
 /* line 2, ../../sass/components/_forms.scss */
@@ -664,6 +691,7 @@ ul {
   padding: 0.625em;
   color: #1e417d;
   border: 1px solid #c2c3c7;
+  width: 100%;
 }
 @media all and (min-width: 37.5em) {
   /* line 2, ../../sass/components/_forms.scss */
@@ -672,16 +700,16 @@ ul {
   }
 }
 
-/* line 16, ../../sass/components/_forms.scss */
+/* line 17, ../../sass/components/_forms.scss */
 .form-type-checkbox label {
   display: inline-block;
 }
 
-/* line 21, ../../sass/components/_forms.scss */
+/* line 22, ../../sass/components/_forms.scss */
 .form-actions {
   margin: 0.75em 0;
 }
-/* line 23, ../../sass/components/_forms.scss */
+/* line 24, ../../sass/components/_forms.scss */
 .form-actions .form-submit {
   font-size: 1.125em;
   display: inline-block;

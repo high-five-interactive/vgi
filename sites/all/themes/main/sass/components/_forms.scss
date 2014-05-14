@@ -5,6 +5,7 @@
     padding: 10/16*1em;
     color: $color_blue;
     border: 1px solid $color_gray;
+    width: 100%;
 
     @media all and (min-width: $media_ewok) {
       padding: 14/16*1em;

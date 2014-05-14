@@ -3,12 +3,16 @@
   #header-inner,
   #content,
   #footer {
-    padding: 6/16*1em 16/16*1em;
+    padding: 6/16*1em $gutter_mobile;
     max-width: $media_atat;
     margin: 0 auto;
 
-    @media all and (min-width: $media_atat) {
-      padding: 6/16*1em 0;
+    @media all and (min-width: $media_ewok) {
+      padding: 6/16*1em $gutter_tablet;
+    }
+
+    @media all and (min-width: $media_vader) {
+      padding: 6/16*1em $gutter_desktop;
     }
   }
 }

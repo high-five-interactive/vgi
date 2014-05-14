@@ -4,11 +4,27 @@
   .menu-block-wrapper {
     ul {
       li {
+
+        @media all and (min-width: $media_ewok) {
+          display: inline-block;
+          margin-right: 20/16*1em;
+        }
         a {
           font-size: 14/16*1em;
+          text-transform: uppercase;
+          text-decoration: none;
           color: $color_white;
+
+          &:hover {
+            color: $color_gray;
+          }
         }
       }
     }
+  }
+
+  .copyright {
+    font-size: 10/16*1em;
+    color: $color_gray;
   }
 }
