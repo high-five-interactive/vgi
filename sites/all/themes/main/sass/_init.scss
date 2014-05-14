@@ -80,18 +80,16 @@ $tahoma:          Tahoma, Verdana, "DejaVu Sans", sans-serif;
 $helvetica:       Helvetica, Arial, "Nimbus Sans L", sans-serif;
 $arial:           Arial, Helvetica, "Nimbus Sans L", sans-serif;
 
-$font-droidsans:    "Droid Sans", sans-serif;
-$font-droidserif:   "Droid Serif", serif;
-$font-opensans:     "Open Sans", sans-serif;
-$font-opensanscond: "Open Sans Condensed", sans-serif;
+$font_play: 'Play', sans-serif;
+$font_tit: 'Titillium Web', sans-serif;
 
 // For an explanation of why "sans-serif" is at the end of this list, see
 // http://meyerweb.com/eric/thoughts/2010/02/12/fixed-monospace-sizing/
 $courier:         "Courier New", "DejaVu Sans Mono", monospace, sans-serif;
 
 // Now create some variables for the font stacks we want to use on this site.
-$base-font-family : $font-opensans; // The font family set on the html element.
-$font-body        : $font-opensans;
+$base-font-family : $font_tit; // The font family set on the html element.
+$font-body        : $font_tit;
 $font-monospace   : $courier;
 
 //
@@ -126,6 +124,11 @@ $color_light_blue: #3a8edb;
 
 // The amount lists, blockquotes and comments are indented.
 $indent-amount: 30px;
+
+
+$gutter_mobile: 18/16*1em;
+$gutter_tablet: 24/16*1em;
+$gutter_desktop: 36/16*1em;
 
 // The height of the navigation container.
 $nav-height: 3em;
