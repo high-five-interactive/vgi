@@ -14,6 +14,11 @@
 
 	$(function() { // Ready
 
+    $('.menu-button').click(function() {
+      $('.primary-navigation').toggleClass('open');
+      return false;
+    })
+
 	}); // End Ready
 
 })(jQuery, Drupal, this, this.document);
