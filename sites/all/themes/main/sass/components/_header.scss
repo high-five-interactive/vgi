@@ -1,0 +1,18 @@
+#header {
+  background-color: $color_dark_blue;
+
+  #header-inner {
+    max-width: 1176/16*1em;
+    margin: 0 auto;
+    padding: 3/16*1em 12/16*1em;
+    overflow: auto;
+
+    .block.logo {
+      float: left;
+
+      a.logo {
+        @include sprite-background(vgi-technology-logo);
+      }
+    }
+  }
+}
