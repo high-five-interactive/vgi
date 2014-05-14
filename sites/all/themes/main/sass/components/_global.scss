@@ -1,0 +1,33 @@
+.column {
+  p {
+    font-size: 16/16*1em;
+    line-height: 24/24*1em;
+    margin: 0 0 18/16*1em;
+    color: $color_dark_blue;
+  }
+
+  ol,
+  ul {
+    li {
+
+    }
+  }
+
+  a {
+    color: $color_blue;
+    text-decoration: underline;
+
+    &:hover {
+      color: $color_light_blue;
+      text-decoration: none;
+    }
+  }
+
+  blockquote {
+
+  }
+
+  img {
+    margin: 10/16*1em;
+  }
+}

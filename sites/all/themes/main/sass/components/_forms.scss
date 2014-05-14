@@ -1,0 +1,26 @@
+.form-item {
+  .form-text {
+    font-size: 18/16*1em;
+    background-color: $color_white;
+    padding: 10/16*1em;
+    color: $color_blue;
+    border: 1px solid $color_gray;
+
+    @media all and (min-width: $media_ewok) {
+      padding: 14/16*1em;
+    }
+  }
+}
+
+.form-type-checkbox {
+  label {
+    display: inline-block;
+  }
+}
+
+.form-actions {
+  margin: 12/16*1em 0;
+  .form-submit {
+    @include button-base;
+  }
+}

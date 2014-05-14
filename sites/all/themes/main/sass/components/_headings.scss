@@ -1,0 +1,15 @@
+h1 {
+  font-size: 18/16*1em;
+  line-height: 30/18*1em;
+  color: $color_white;
+  font-weight: 700;
+
+  &#page-title {
+  }
+}
+
+h2 {
+  font-size: 24/16*1em;
+  line-height: 32/24*1em;
+  color: $color_dark_blue;
+}

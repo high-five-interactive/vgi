@@ -36,96 +36,26 @@
   }
 }
 
-@mixin base-button {
-  padding: 11/16*1em 42/16*1em;
-  border-radius: 3px;
-  transition: all .1s ease-in-out;
-  text-shadow: 0 0 0 transparent;
-}
-
-@mixin question-answer-before {
-  font-size: 14/16*1em;
-  position: absolute;
-  left: 0;
-  box-sizing: border-box;
-  border-radius: 20px;
-  border: 1px solid $color-black;
-}
-
-@mixin accordion-title {
-  font-family: $font-droidsans;
-  font-size: 16/16*1em;
-  line-height: 18/16*1em;
-  color: $color-black;
-  border-bottom: 1px solid $color-light-gray;
-  box-sizing: border-box;
-  padding: 20/16*1em 12/16*1em;
-  font-weight: 700;
-  position: relative;
-  margin-top: -1px;
-  margin-bottom: 0;
-  background-color: #f8f8f8;
-
-  .expand-accordion {
-    @include accordion-button;
-  }
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  &:first-of-type {
-    border-top: 1px solid $color-light-gray;
-  }
-}
-
-@mixin accordion-button {
-  content: "+";
-  position: absolute;
-  width: 32/16*1rem;
-  height: 32/16*1rem;
-  font-size: 38/16*1em;
-  color: $color-white;
-  background-color: $color-blue;
-  border-radius: 25px;
-  box-sizing: border-box;
-  padding: 7/16*1rem 0 0 5/16*1rem;
-  right: 12/16*1rem;
-  top: 12/16*1rem;
-
-  &.close {
-    content: "x";
-    font-size: 28/16*1em;
-    padding: 6/16*1rem 0 0 8/16*1rem;
-  }
-}
-
-@mixin accordion-content {
-  height: 0px;
-  overflow: hidden;
-  box-sizing: border-box;
-
-  &.no-js,
-  &.show {
-    height: auto;
-    padding-top: 20/16*1em;
-  }
-}
-
-@mixin blue-button {
-  font-size: 14/16*1em;
-  font-family: $font-droidsans;
-  color: $color-white;
-  padding: 8/14*1em 40/14*1em;
+@mixin button-base {
+  font-size: 18/16*1em;
+  display: inline-block;
+  border: 0 none;
   border-radius: 4px;
-  background-color: #005397;
-  box-shadow: 0 4px #00214b;
-  border: 0;
+  padding: 12/18*1em 22/18*1em;
+  text-decoration: none;
+
+  // defaults
+  background-color: $color_orange;
+  color: $color_white;
 
   &:hover {
-    background-color: $color-blue;
+    background-color: $color_light_orange;
+    color: $color_white;
   }
 }
+
+
+
 
 $sprites: sprite-map("sprites/*.png", $spacing: 15px);
 $sprites_retina: sprite-map("sprites2x/*.png", $spacing: 30px);
