@@ -1,0 +1,7 @@
+#content {
+  background: $color_white url('../images/pattern-bg.png') repeat top left;
+
+  @media all and (min-resolution: 144dpi) {
+    background: $color_white url('../images/pattern-bg-2x.png') repeat top left;
+  }
+}

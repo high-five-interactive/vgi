@@ -1,11 +1,12 @@
 .breadcrumb {
   background-color: $color_blue;
-  padding: 18/16*1em;
+  padding: 18/16*1em 0;
   box-sizing: border-box;
 
   ol {
     margin: 0;
-    padding: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 
     li {
       color: $color_gray;

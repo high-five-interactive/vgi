@@ -1,9 +1,25 @@
 .tabs-primary {
   li {
-    list-style: none;
-    display: inline-block;
+    display: block;
+    width: 100%;
+    margin-bottom: 10/16*1em;
+
+    @media all and (min-width: ($media_ewok + 16/16*1em)) {
+      width: auto;
+      list-style: none;
+      display: inline-block;
+    }
+
     a {
       @include button-base;
+      width: 100%;
+      box-sizing: border-box;
+      text-align: center;
+
+      @media all and (min-width: ($media_ewok + 16/16*1em)) {
+        width: auto;
+        text-align: left;
+      }
     }
   }
 }
