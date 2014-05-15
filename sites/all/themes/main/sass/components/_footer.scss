@@ -1,6 +1,24 @@
 #footer-wrapper {
   background: $color_blue url('../images/footer-bg.jpg') repeat top left;
 
+  .facebook {
+    display: block;
+    font-size: 14/16*1em;
+    color: $color_white;
+    text-decoration: none;
+
+    &:hover {
+      color: $color_gray;
+    }
+
+    &:after {
+      content: "";
+      position: relative;
+      @include sprite-background('vgi-facebook');
+      display: inline-block;
+    }
+  }
+
   #block-menu-block-3 {
     @include pie-clearfix;
     margin-top: 10/16*1em;
