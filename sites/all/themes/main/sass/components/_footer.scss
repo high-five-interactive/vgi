@@ -1,14 +1,44 @@
 #footer-wrapper {
   background: $color_blue url('../images/footer-bg.jpg') repeat top left;
 
+  #block-menu-block-3 {
+    @include pie-clearfix;
+    margin-top: 10/16*1em;
+
+    @media all and (min-width: $media_vader) {
+      margin-top: 20/16*1em;
+    }
+
+    &:before {
+      @include sprite-background('vgi-technology-logo');
+      position: relative;
+      content: "";
+
+      @media all and (min-width: $media_vader) {
+        float: left;
+      }
+    }
+  }
+
   .menu-block-wrapper {
+    margin-top: 20/16*1em;
+
+    @media all and (min-width: $media_vader) {
+      margin: 0 0 0 20/16*1em;
+      padding-top: 55/16*1em;
+      display: inline-block;
+      float: left;
+    }
+
     ul {
       li {
+        list-style: none;
 
-        @media all and (min-width: $media_ewok) {
+        @media all and (min-width: $media_luke) {
           display: inline-block;
           margin-right: 20/16*1em;
         }
+
         a {
           font-size: 14/16*1em;
           text-transform: uppercase;
@@ -26,5 +56,7 @@
   .copyright {
     font-size: 10/16*1em;
     color: $color_gray;
+    clear: both;
+    margin-top: 20/10*1em;
   }
 }
