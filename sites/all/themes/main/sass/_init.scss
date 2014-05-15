@@ -70,6 +70,17 @@ $h6-font-size: 0.67 * $base-font-size;
 // monospace) hints at what type of font to use if the web browser doesn't
 // find any of the fonts in the list.
 
+@font-face {
+  font-family: 'klavika_reg_capsregular';
+  src: url('../fonts/klavikaregcaps-sc-webfont.eot');
+  src: url('../fonts/klavikaregcaps-sc-webfont.eot?#iefix') format('embedded-opentype'),
+       url('../fonts/klavikaregcaps-sc-webfont.woff') format('woff'),
+       url('../fonts/klavikaregcaps-sc-webfont.ttf') format('truetype'),
+       url('../fonts/klavikaregcaps-sc-webfont.svg#klavika_reg_capsregular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 // First, let's create some font stacks.
 $times-new-roman: "Times New Roman", Times, Georgia, "DejaVu Serif", serif;
 $times:           Times, "Times New Roman", Georgia, "DejaVu Serif", serif;
@@ -81,6 +92,7 @@ $helvetica:       Helvetica, Arial, "Nimbus Sans L", sans-serif;
 $arial:           Arial, Helvetica, "Nimbus Sans L", sans-serif;
 
 $font_opensans: 'Open Sans', Arial, sans-serif;
+$font_klavika_caps: 'klavika_reg_capsregular', sans-serif;
 
 // For an explanation of why "sans-serif" is at the end of this list, see
 // http://meyerweb.com/eric/thoughts/2010/02/12/fixed-monospace-sizing/
@@ -145,7 +157,7 @@ $tabs-border: #bbb;
 
 // Sprite width
 // Once the sprites are generated, update the width of the non retina sprite
-$normal-sprite-width: 241px;
+$normal-sprite-width: 164px;
 
 
 // =============================================================================
