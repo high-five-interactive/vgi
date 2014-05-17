@@ -1,6 +1,16 @@
 .front {
   #content {
     background-color: #030303;
+    background-repeat: no-repeat;
+    background-image: url(../images/home_bg-smaller.jpg);
+
+    @media all and (min-width: $media_yoda) {
+      background-image: url(../images/home_bg-small.jpg);
+    }
+
+    @media all and (min-width: $media_vader) {
+      background-image: url(../images/home_bg-medium.jpg);
+    }
 
     @media all and (min-width: $media_atat) {
       background-image: url(../images/home_bg-big.jpg);
@@ -16,16 +26,35 @@
 
     h1 {
       font-family: $font_klavika_caps;
-      font-size: 60/16*1em;
-      line-height: 0.85em;
+      font-size: 30/16*1em;
+      line-height: 1em;
       color: $color_white;
       text-shadow: 3px 4px rgba(0,0,0,.13);
       font-weight: normal;
       word-spacing: 1000px;
+      letter-spacing: 3px;
+      margin-bottom: 15/30*1em;
+
+
+      @media all and (min-width: $media_yoda) {
+        font-size: 50/16*1em;
+      }
+
+      @media all and (min-width: $media_luke) {
+        font-size: 60/16*1em;
+        letter-spacing: 8px;
+        line-height: 0.85em;
+      }
+
+      @media all and (min-width: $media_jabba) {
+        margin-top: 100/60*1em;
+      }
     }
 
     .button.orange {
       @include button-base;
+      font-size: 14/16*1em;
+      text-transform: uppercase;
     }
   }
 

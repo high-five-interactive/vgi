@@ -161,6 +161,22 @@
               }
             }
 
+            &.is-expanded > a {
+              @media all and (min-width: $media_luke) {
+                &:after {
+                  content: "";
+                  position: absolute;
+                  width: 0;
+                  height: 0;
+                  border-top: 6/16*1em solid transparent;
+                  border-bottom: 6/16*1em solid transparent;
+                  border-left: 6/16*1em solid $color_blue;
+                  right: 10/16*1em;
+                  top: 12/16*1em;
+                }
+              }
+            }
+
             &:hover {
               > .menu-wrapper > ul {
                 display: block;
@@ -173,6 +189,10 @@
 
                   &:before {
                     border-bottom-color: $color_random_blue;
+                  }
+
+                  &:after {
+                    border-left-color: $color_white;
                   }
                 }
               }

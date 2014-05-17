@@ -1,0 +1,73 @@
+.block.doorways {
+  @include pie-clearfix;
+  margin: 0 -10/16*1em;
+
+  @media all and (min-width: $media_luke) {
+    width: 616/16*1em;
+    margin: 20/16*1em auto 30/16*1em auto;
+  }
+
+  @media all and (min-width: $media_jabba+40/16*1em) {
+    width: auto;
+    margin: 20/16*1em auto 200/16*1em auto;
+  }
+
+  a {
+    width: 302/16*1em;
+    height: 252/16*1em;
+    margin: 20/16*1em auto;
+    display: block;
+
+    @media all and (min-width: $media_luke) {
+      float: left;
+      margin: 0 0 10/16*1em 0;
+
+      &:first-child {
+        margin-right: 10/16*1em;
+      }
+
+      &:last-child {
+        margin: 0 auto;
+        float: none;
+        clear: both;
+      }
+    }
+
+    @media all and (min-width: $media_jabba+40/16*1em) {
+      margin-right: 10/16*1em;
+
+      &:last-child {
+        margin-right: 0;
+        float: left;
+        clear: none;
+      }
+    }
+
+    &.automation {
+      background: url(../images/doorway-automation.png);
+
+      @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+        background: url(../images/doorway-automation.png);
+        background-size: 302px auto;
+      }
+    }
+
+    &.security {
+      background: url(../images/doorway-security.png);
+
+      @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+        background: url(../images/doorway-security.png);
+        background-size: 302px auto;
+      }
+    }
+
+    &.ip-networks {
+      background: url(../images/doorway-ip_networks.png);
+
+      @media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi) {
+        background: url(../images/doorway-ip_networks.png);
+        background-size: 302px auto;
+      }
+    }
+  }
+}
