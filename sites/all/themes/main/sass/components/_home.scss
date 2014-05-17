@@ -1,0 +1,37 @@
+.front {
+  #content {
+    background-color: #030303;
+
+    @media all and (min-width: $media_atat) {
+      background-image: url(../images/home_bg-big.jpg);
+    }
+
+    @media all and (min-width: $media_deathstar) {
+      background-image: url(../images/home_bg-biggest.jpg);
+    }
+
+    #content-inner {
+      max-width: 926/16*1em;
+    }
+
+    h1 {
+      font-family: $font_klavika_caps;
+      font-size: 60/16*1em;
+      line-height: 0.85em;
+      color: $color_white;
+      text-shadow: 3px 4px rgba(0,0,0,.13);
+      font-weight: normal;
+      word-spacing: 1000px;
+    }
+
+    .button.orange {
+      @include button-base;
+    }
+  }
+
+  .column p {
+    font-size: 18/16*1em;
+    line-height: 1.4;
+    color: $color_white;
+  }
+}
