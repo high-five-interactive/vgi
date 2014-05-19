@@ -1,0 +1,138 @@
+.view-id-services {
+  .views-row {
+    @include pie-clearfix;
+  }
+
+  .views-field-field-service-image {
+    float: left;
+    width: auto;
+    line-height: 1px;
+
+    @media all and (min-width: $media_vader) {
+      margin-right: 40/16*1em;
+    }
+
+    img {
+      margin: 0;
+    }
+  }
+
+  .views-field-body {
+    clear: both;
+    padding-top: 16/16*1em;
+
+    @media all and (min-width: 1110/16*1em) {
+      @include pie-clearfix;
+      color: $color-white;
+      clear: none;
+      display: block;
+      background-color: $color_blue;
+      padding-right: 40/16*1em;
+      padding-top: 30/16*1em;
+    }
+
+
+
+    p {
+      line-height: 24/16*1em;
+
+      @media all and (min-width: 1110/16*1em) {
+        color: $color_white;
+      }
+    }
+
+    ul {
+      margin-bottom: 20/16*1em;
+
+      li {
+        list-style: none;
+        font-size: 18/16*1em;
+        font-weight: 700;
+      }
+    }
+
+    .button {
+      @include button-responsive;
+      text-transform: uppercase;
+      margin-top: 10/16*1em;
+      margin-right: 8/16*1em;
+    }
+  }
+
+  .views-field-field-information-block {
+    @include pie-clearfix;
+    margin-top: 40/16*1em;
+
+    .item-list ul > {
+      li {
+        list-style: none;
+        background-color: #a7b6c9;
+        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 16/16*1em;
+        min-height: 60/16*1em;
+        box-sizing: border-box;
+        padding: 20/16*1em;
+
+        @media all and (min-width: $media_ewok) {
+          width: 32%;
+          float: left;
+
+          &:first-of-type {
+            margin-right: 12/16*1em;
+          }
+
+          &:last-of-type {
+            float: right;
+            margin-right: 0;
+          }
+        }
+
+        @media all and (min-width: $media_luke) {
+          padding: 30/16*1em 20/16*1em;
+
+          &:first-of-type {
+            margin-right: 16/16*1em;
+          }
+        }
+
+        @media all and (min-width: $media_jabba) {
+          &:first-of-type {
+            margin-right: 24/16*1em;
+          }
+        }
+
+        h3 {
+          margin: 0 0 8/16*1em 0;
+          color: $color_blue;
+        }
+
+        p {
+          color: $color_white;
+          line-height: 24/16*1em;
+        }
+
+        li {
+          list-style: circle;
+          color: $color_orange;
+          display: block;
+          margin: 0 0 0 20/16*1em;
+          width: 100%;
+          float: none !important;
+          padding: 0;
+          background: transparent none;
+          border-radius: 0;
+          min-height: 0;
+
+          &:last-of-type {
+            margin-left: 20/16*1em;
+          }
+
+
+
+        }
+
+      }
+    }
+  }
+}

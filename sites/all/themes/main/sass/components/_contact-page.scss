@@ -1,0 +1,29 @@
+.page-node-2175 {
+  #content-inner {
+    @include pie-clearfix;
+  }
+
+  article {
+    @media all and (min-width: $media_luke) {
+      width: 48%;
+      float: left;
+    }
+  }
+
+  #block-block-16 {
+    @media all and (min-width: $media_luke) {
+      width: 48%;
+      float: right;
+    }
+  }
+
+  #content-inner .contact-info  {
+    h4 {
+      color: $color_blue;
+    }
+
+    address {
+      color: $color_orange;
+    }
+  }
+}

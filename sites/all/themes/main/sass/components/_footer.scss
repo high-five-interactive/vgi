@@ -83,30 +83,4 @@
     clear: both;
     margin-top: 20/10*1em;
   }
-
-  #footer {
-    h4 {
-      font-size: 16/16*1em;
-      margin: 8/16*1em 0;
-      color: $color_white;
-      font-weight: normal;
-    }
-
-    address {
-      font-size: 14/16*1em;
-      line-height: 22/14*1em;
-      color: $color_gray;
-      font-style: normal;
-      margin-bottom: 10/14*1em
-    }
-
-    h4.contact,
-    a {
-      margin: 0;
-      display: block;
-      font-size: 14/16*1em;
-      color: $color_orange;
-      text-decoration: none;
-    }
-  }
 }
