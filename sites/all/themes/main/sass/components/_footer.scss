@@ -1,27 +1,42 @@
 #footer-wrapper {
   background: $color_blue url('../images/footer-bg.jpg') repeat top left;
 
-  .facebook {
-    display: block;
-    font-size: 14/16*1em;
-    color: $color_white;
-    text-decoration: none;
-
-    &:hover {
-      color: $color_gray;
-    }
-
-    &:after {
-      content: "";
-      position: relative;
-      @include sprite-background('vgi-facebook');
-      display: inline-block;
-    }
-  }
-
   #block-block-14 {
-    float: right;
+    clear: both;
     @include pie-clearfix;
+    margin-bottom: -25/16*1em;
+
+    @media all and (min-width: $media_luke) {
+      clear: none;
+      float: right;
+      margin-top: 85/16*1em;
+    }
+
+    @media all and (min-width: $media_vader) {
+      margin-top: 57/16*1em;
+    }
+
+    .facebook {
+      display: block;
+      font-size: 14/16*1em;
+      color: $color_white;
+      text-decoration: none;
+      line-height: 60px;
+      vertical-align: top;
+      text-transform: uppercase;
+
+      &:hover {
+        color: $color_gray;
+      }
+
+      &:after {
+        content: "";
+        position: relative;
+        @include sprite-background('vgi-facebook');
+        display: inline-block;
+        margin-left: 10/14*1em;
+      }
+    }
   }
 
   #block-menu-block-3 {
