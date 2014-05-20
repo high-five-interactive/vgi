@@ -1,0 +1,47 @@
+.view-staff-members {
+  .views-row {
+    @include pie-clearfix;
+    padding-bottom: 20/16*1em;
+    margin-bottom: 20/16*1em;
+    border-bottom: 1px solid $color_orange;
+
+    &:last-of-type {
+      border-bottom: 0;
+    }
+  }
+
+  .views-field-field-staff-image {
+    @media all and (min-width: $media_ewok) {
+      float: left;
+      width: auto;
+    }
+
+    img {
+      margin: 0;
+      border-radius: 5px;
+
+      @media all and (min-width: $media_ewok) {
+        margin: 0 12/16*1em 12/16*1em 0;
+      }
+
+      @media all and (min-width: $media_luke) {
+        margin: 0 20/16*1em 20/16*1em 0;
+      }
+    }
+  }
+
+  .views-field-title {
+    font-size: 24/16*1em;
+    font-weight: 700;
+    color: $color_blue;
+  }
+
+  .views-field-field-position {
+    color: $color_light_blue;
+    margin: 6/16*1em 0 12/16*1em 0;
+  }
+
+  .views-field-body p {
+    line-height: 24/16*1em;
+  }
+}

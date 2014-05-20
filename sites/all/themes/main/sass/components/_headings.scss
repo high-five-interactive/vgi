@@ -5,6 +5,14 @@ h1 {
   font-weight: 700;
 
   &#page-title {
+    color: $color_blue;
+    font-size: 24/16*1em;
+    line-height: 28/24*1em;
+
+    @media all and (min-width: $media_luke) {
+      font-size: 28/16*1em;
+      line-height: 34/28*1em;
+    }
   }
 }
 

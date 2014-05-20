@@ -9,7 +9,7 @@
     padding-bottom: 0 !important;
 
     li {
-      color: $color_gray;
+      color: #3a8edb;
       list-style: none;
       position: relative;
       display: inline-block;
@@ -20,17 +20,10 @@
         color: $color_gray;
         text-decoration: none;
         cursor: pointer;
-        padding: 0 12/16*1em 0 0;
+        padding: 0 8/16*1em 0 0;
 
         &:hover {
           color: $color_white;
-        }
-
-        &:after {
-          content: "/";
-          position: absolute;
-          right: 0;
-          padding: 0 10/16*1em;
         }
       }
     }

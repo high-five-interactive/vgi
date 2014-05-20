@@ -42,7 +42,10 @@
   #block-menu-block-3 {
     @include pie-clearfix;
     margin-top: 10/16*1em;
-    float: left;
+
+    @media all and (min-width: $media_ewok) {
+      float: left;
+    }
 
     @media all and (min-width: $media_vader) {
       margin-top: 20/16*1em;
