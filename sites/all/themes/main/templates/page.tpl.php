@@ -44,13 +44,24 @@
         <div class="dropdown-filter">
           <div class="wrapper">
             <?php
-              function printTaxTree($vid, $parent = 0) {
-                if($terms = taxonomy_get_tree($vid, $parent)) {
+              function printTaxTree($vid, $terms = false) {
+                if($terms || $terms = taxonomy_get_tree($vid, 0, 1)) {
                   print('<ul>');
                   foreach ($terms as $term) {
                     print('<li>');
+
+                    $is_parent = false;
+                    if($child_terms = taxonomy_get_tree($vid, $term->tid, 1)) {
+                      $is_parent = true;
+                    }
+
+                    if($is_parent) {
+                      print l($term->name, 'taxonomy/term/' . $term->tid, array('attributes' => array('class' => "parent")));
+                      printTaxTree($vid, $child_terms);
+                    } else {
                       print l($term->name, 'taxonomy/term/' . $term->tid);
-                      printTaxTree($vid, $term->tid);
+                    }
+
                     print('</li>');
                   }
                   print('</ul>');
