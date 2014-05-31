@@ -184,7 +184,6 @@
 
   .brands, .categories {
     position: relative;
-    margin-bottom: 1em;
     z-index: 1;
 
     @media all and (min-width: $media_luke) {
@@ -194,6 +193,8 @@
   }
 
   .categories {
+    margin-bottom: 15/18*1em;
+
     .title {
       margin-right: 40/18*1em;
     }
