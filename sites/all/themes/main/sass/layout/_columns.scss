@@ -8,6 +8,7 @@
     padding: 6/16*1em $gutter_mobile;
     max-width: $media_atat;
     margin: 0 auto;
+    box-sizing: border-box;
 
     @media all and (min-width: $media_ewok) {
       padding: 6/16*1em $gutter_tablet;
