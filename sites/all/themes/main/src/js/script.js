@@ -51,6 +51,12 @@
       $('.dropdown-filter').toggleClass('open');
       $('.search-filter .search').removeClass('open');
       $('.dropdown-search').removeClass('open');
+      $('.dropdown-filter .title').removeClass('open').siblings('ul').removeClass('open');
+    });
+
+    $('.dropdown-filter .title').click(function() {
+      $(this).toggleClass('open').siblings('ul').toggleClass('open');
+      $('.dropdown-filter .title').not(this).removeClass('open').siblings('ul').removeClass('open');
     });
     // End Search/Filter
 
