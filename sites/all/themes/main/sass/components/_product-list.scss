@@ -1,6 +1,10 @@
 .view-id-engineered_systems_categories {
   .view-content {
     @include pie-clearfix;
+
+    @media all and (min-width: $media_yoda) {
+      margin: 0 -10/16*1em;
+    }
   }
 
   .views-row {
@@ -10,7 +14,25 @@
       margin: 0;
     }
 
-    @media all and (min-width: $media_ewok) {
+    .views-field-title {
+      color: $color_dark_blue;
+      font-weight: 700;
+    }
+
+    .views-field-name,
+    .views-field-view-node {
+      margin-top: 8/16*1em;
+
+      a {
+        @include button-responsive;
+      }
+    }
+
+    .views-field-model {
+      color: $color_light_blue;
+    }
+
+    @media all and (min-width: $media_yoda) {
       width: 50%;
       float: left;
       box-sizing: border-box;
