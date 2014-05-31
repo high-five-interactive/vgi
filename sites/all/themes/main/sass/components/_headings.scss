@@ -4,6 +4,7 @@ h1 {
   color: $color_white;
   font-weight: 700;
 
+  &.page-title,
   &#page-title {
     color: $color_blue;
     font-size: 24/16*1em;
