@@ -1,0 +1,25 @@
+.view-id-engineered_systems_categories {
+  .view-content {
+    @include pie-clearfix;
+  }
+
+  .views-row {
+    width: 100%;
+
+    img {
+      margin: 0;
+    }
+
+    @media all and (min-width: $media_ewok) {
+      width: 50%;
+      float: left;
+      box-sizing: border-box;
+      padding: 10/16*1em;
+    }
+
+    @media all and (min-width: $media_vader) {
+      width: 33%;
+      float: left;
+    }
+  }
+}
