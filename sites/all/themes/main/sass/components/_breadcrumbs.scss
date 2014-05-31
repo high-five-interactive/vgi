@@ -9,18 +9,22 @@
     padding-bottom: 0 !important;
 
     li {
-      color: #3a8edb;
+      color: $color_gray;
       list-style: none;
       position: relative;
       display: inline-block;
       padding: 0 0 0 8/16*1em;
       box-sizing: border-box;
 
+      &:last-of-type {
+        color: #3a8edb;
+      }
+
       a {
         color: $color_gray;
         text-decoration: none;
         cursor: pointer;
-        padding: 0 8/16*1em 0 0;
+        padding: 0 6/16*1em 0 0;
 
         &:hover {
           color: $color_white;
