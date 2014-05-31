@@ -1,0 +1,103 @@
+.uc-product-node .panel-2col {
+  padding: 20/16*1em 0;
+  border-top: 1px solid $color_orange;
+  border-bottom: 1px solid $color_orange;
+
+  .panel-col-first {
+    width: 100%;
+    float: none;
+
+    @media all and (min-width: $media_luke) {
+      width: 49%;
+      float: left;
+    }
+
+    @media all and (min-width: $media_atat) {
+      width: 650/16*1em;
+    }
+
+    .views-field-uc-product-image {
+      img {
+        margin: 0;
+      }
+    }
+  }
+
+  .panel-col-last {
+    width: 100%;
+    float: none;
+
+    @media all and (min-width: $media_luke) {
+      width: 49%;
+      float: right;
+    }
+
+    @media all and (min-width: $media_atat) {
+      width: 41%;
+    }
+
+    .views-field-title {
+      h2 {
+        margin: 8/24*1em 0;
+      }
+    }
+
+    .mfg,
+    .part-number {
+      color: $color_light_blue;
+    }
+
+    .field-name-body {
+      margin: 16/16*1em 0;
+
+      p {
+        &:last-of-type {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .price {
+      font-size: 24/16*1em;
+      font-weight: 700;
+      margin-top: 12/24*1em;
+    }
+
+    .form-type-uc-quantity {
+      width: 100%;
+      background-color: $color_light_gray;
+      box-sizing: border-box;
+      padding: 8/16*1em;
+      margin-top: 20/16*1em;
+      float: left;
+
+      @media all and (min-width: 400/16*1em) {
+        width: 180/16*1em;
+      }
+
+      label {
+        display: inline;
+        color: $color_orange;
+        font-weight: normal;
+      }
+
+      #edit-qty {
+        width: 60/16*1em;
+        padding: 8/16*1em;
+      }
+    }
+
+    .form-actions {
+      .form-submit {
+        display: block;
+        width: 100%;
+      }
+
+      @media all and (min-width: 400/16*1em) {
+        margin: 26/16*1em 0 0 16/16*1em;
+        width: auto;
+        float: left;
+      }
+    }
+  }
+}

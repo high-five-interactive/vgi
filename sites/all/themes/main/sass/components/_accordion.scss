@@ -1,0 +1,45 @@
+.view-id-engineered_systems_detail {
+  width: 100%;
+  margin: 30/16*1em 0;
+
+  @media all and (min-width: $media_luke) {
+    width: 500/16*1em;
+  }
+
+  @media all and (min-width: $media_vader) {
+    width: 650/16*1em;
+  }
+
+  .heading, .content {
+    padding: 16/16*1em;
+  }
+
+  .heading {
+    background-color: $color_blue;
+    color: $color_white;
+    font-weight: 700;
+    border-top: 1px solid $color_white;
+    cursor: pointer;
+
+    &:first-of-type {
+      border-top: 0;
+    }
+
+    &.active {
+      background-color: #becada;
+      color: $color_blue;
+    }
+  }
+
+  .content {
+    background-color: #e2e7ed;
+    box-sizing: border-box;
+    padding: 16/16*1em;
+
+    p {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
