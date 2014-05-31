@@ -195,6 +195,10 @@
   .categories {
     margin-bottom: 15/18*1em;
 
+    @media all and (min-width: $media_luke) {
+      margin-bottom: 0;
+    }
+
     .title {
       margin-right: 40/18*1em;
     }
