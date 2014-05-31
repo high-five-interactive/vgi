@@ -1,0 +1,14 @@
+name = Search by Page Paths
+description = Sub-Module for Search by Page: Allows you to enter Drupal paths to pages such as Views, for search indexing in Search by Page.
+core = 7.x
+dependencies[] = search_by_page
+package = "Search"
+files[] = sbp_paths.module
+files[] = sbp_paths.install
+
+; Information added by drupal.org packaging script on 2013-01-19
+version = "7.x-1.3"
+core = "7.x"
+project = "search_by_page"
+datestamp = "1358612280"
+

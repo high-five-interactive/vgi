@@ -1,0 +1,218 @@
+
+Search by Page x.x-x.x, xxxx-xx-xx
+----------------------------------
+
+Search by Page 7.x-1.x, xxxx-xx-xx
+----------------------------------
+
+Search by Page 7.x-1.3, 2013-01-19
+----------------------------------
+#1386822 by Jaapx, jhodgdon: Ensure only one indexing user is created per role
+
+#1187776, #1558142 by jhodgdon: Only render content-area blocks when finding
+page content in search, and reset some more statics in the menu system.
+
+#1598710 by jhodgdon: Make sure correct theme is used to index pages.
+
+#1617688 by frizi, jhodgdon: Fix bug in dealing with pages with GET arguments.
+
+Search by Page 7.x-1.2, 2011-09-22
+----------------------------------
+#1274254 by jhodgdon, joachm: Allow upper-case file extensions to be indexed.
+
+#1274154 by jhodgdon, joachim: Order content types by name on settings page.
+
+#1183716 by jhodgdon: Add note to README about temporary table permission.
+
+#815864 by jhodgdon: Update to support new Internationalization module API,
+and add test for internationalization
+
+#1040002 by kirill.volkov: Add fix for more active trail problems.
+
+#1155166 by jhodgdon: Add warnings to README and settings page about bad
+settings that will cause content not to be indexed
+
+#1187776 by jhodgdon: attempt to fix PHP notice in node_page_title
+
+#1018764, #1040002 by jhodgdon: Catch extra headers and active trail problems
+during search results display generation. Also fix one PHP warning.
+
+#1231426 by thekevinday: Fix permission name on environment delete URL.
+
+#1227528 by jhodgdon, ralf.strobel: Fix tag stripping function so it works with
+tags with attributes, and update test to test this.
+
+Search by Page 7.x-1.1, 2010-12-31
+----------------------------------
+#976272 by jhodgdon: Add minimum/maximum time constraints to search index
+cycling, on a per-module, per-environment basis.
+
+#738382 by jhodgdon: Make Search by Page Nodes reindex a node if comments are
+added, edited, or deleted.
+
+#806048 by jhodgdon: Make Search by Page use different cron index limit from
+core Search module, and make it so the core Search module can be set to 0 index
+limit.
+
+
+Search by Page 7.x-1.0, 2010-12-03
+----------------------------------
+#738382 by jhodgdon: Make SBP Users module reindex changed users with priority
+over the normal cycling through reindexing. (6.x-1.13)
+
+#952076 by jhodgdon: Add details section to status listing on search settings
+page, as an aid to figuring out what is not yet indexed. (6.x-1.13)
+
+#738382 by jhodgdon: Make SBP Attachments and Nodes modules reindex changed
+nodes with priority over the normal cycling through reindexing. (6.x-1.13)
+
+#952076 by jhodgdon, bibo: Fix bug where unreadable items made the search index
+get stuck and blocked other items from indexing, especially file attachments.
+(6.x-1.13)
+
+#674070 by jhodgdon: Drupal 7 changes (multiple times); update SBP so it will
+work.
+
+#864518 by jhodgdon: Get SBP working with PostgreSQL (6.x-1.12)
+
+by jhodgdon: Move SBP modules into group "Search" in module listings. (6.x-1.12)
+
+#882328 by jhodgdon: Make excerpts with stemmed and exact matches show the
+earliest match even if there is an exact match later in the content. (6.x-1.12)
+
+#806030 by jhodgdon: Add new setting to exclude HTML tag contents from search.
+(6.x-1.11)
+
+#812406 by jhodgdon: Add theme support for search form to detect block vs.
+page. (6.x-1.11)
+
+#816770 by jhodgdon: Add node variable to search result template for more
+flexible theming in Search by Page Attachments. (6.x-1.11)
+
+#828006 by jhodgdon: Block session saving when indexing content. (6.x-1.11)
+
+#806028 by jhodgdon: Fix breadcrumb on search results page. (6.x-1.11)
+
+#716342 by jhodgdon: Add random end to generated user names to avoid conflicts.
+Also, don't use $user as a local variable name. (6.x-1.10)
+
+#674070 by jhodgdon: Port of Search by Page to Drupal 7 (started from 6.x-1.9;
+updates to 6.x equivalents noted above)
+
+
+Search by Page 6.x-1.9, 2009-02-15
+----------------------------------
+#605458 by jhodgdon: Change the way role assignment is done during search
+indexing. Also increased efficiency in user queries and made sure only
+unblocked users are shown in search results.
+
+
+Search by Page 6.x-1.8, 2009-02-12
+----------------------------------
+#706134 by jhodgdon: Add theme support for the search form.
+
+#705154 by jhodgdon: Make pages with queries (?/&) in URLs work with Search
+by Page Paths.
+
+#699222 by jhodgdon: Fix minor code issues so Coder tests will pass. Also
+made updates to the tests to work with newer versions of Search Files module
+and SimpleTest.
+
+#605458, #492878 by jhodgdon: Update how permissions work for search indexing,
+and how search environments work.
+
+#605458, #662282, #492878 by jhodgdon: Better multilingual support. Add
+preliminary support for search environments (will be revised). Add preliminary
+fix for permissions problems indexing content (will be revised).
+
+
+Search by Page 6.x-1.7, 2009-12-13
+----------------------------------
+#650640 by jhodgdon: SBP Attachments was indexing some files it shouldn't have.
+
+#543214 by jhodgdon: Add more tests to module.
+
+
+Search by Page 6.x-1.6, 2009-11-19
+----------------------------------
+#543214 by jhodgdon: Add more tests to module.
+
+#613400 by jhodgdon: Make path aliases work in Search by Page and SBP Paths.
+
+
+Search by Page 6.x-1.5, 2009-10-21
+----------------------------------
+#492892 by jhodgdon: Add option to display teasers instead of excerpts in node
+search results.
+
+#543214 by jhodgdon: Add basic tests to the module.
+
+#605458 by jhodgdon: Add some error logging and ability to reset indexing for
+pages that for some reason didn't get indexed properly.
+
+
+Search by Page 6.x-1.4, 2009-10-01
+----------------------------------
+#493270, #437084, #492892 by jhodgdon: Add better search excerpt function to
+work with stemming modules to highlight stemmed keyword matches.
+
+
+Search by Page 6.x-1.3, 2009-09-09
+----------------------------------
+#572878 by milesw: Retain search pager totals on search results page.
+
+by jhodgdon: Regularize API documentation.
+
+#556820 by scottrigby, jhodgdon: Fix HTML validation errors.
+
+
+Search by Page 6.x-1.2, 2009-08-14
+----------------------------------
+#538936 by jhodgdon: Fix bug where paging of search results was sometimes not
+working in Search by Page
+
+#547198 by jhodgdon: Update help text on settings screen, and restrict
+CCK field list to FileField types, in Search by Page Attachments, to
+avoid confusion.
+
+#543212 by jhodgdon: Add support for translating user-provided text
+in Search by Page and Search by Page Paths for multi-lingual sites.
+Also added ability to customize the submit button on the search form.
+
+#541958 by jhodgdon: Use parentheses to make sure all SQL joins are
+unambiguous in the search query for Search by Page
+
+Make all fieldsets on Settings pages collapsible, and give them
+weights for more sensible ordering.
+
+#543070 work-around by jhodgdon: Link directly to Search Files API
+helper set-up page in Search Files Attach, because main Search Files
+page is broken.
+
+#541958 by jhodgdon: Fix bug in search query when using Search by
+Page Attachments and Search by Page Nodes with a content access
+module.
+
+
+Search by Page 6.x-1.1, 2009-08-04
+----------------------------------
+#460942 by jhodgdon: Fix bug in search query generation
+
+jhodgdon: Simplify search query for Search by Page Users
+
+#460942 by jhodgdon: Fix URL problems for file attachments for multi-lingual
+sites
+
+#460942 by jhodgdon (with help from Josh Waihi, as well as Search
+Files, and Upload modules): Add support for indexing file attachments,
+in the form of a new sub-module Search by Page Attachments
+
+#460942 by jhodgdon: Add support during search indexing for
+sub-modules to override generation of page content in
+hook_sbp_details(). This is primarily for file attachments.
+
+
+Search by Page 6.x-1.0, 2009-04-22
+----------------------------------
+Initial release, for Drupal 6.x
+

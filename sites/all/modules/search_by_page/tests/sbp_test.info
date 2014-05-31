@@ -1,0 +1,14 @@
+name = Search by Page Test Module
+description = "Test module for Search by Page - Do Not Enable!"
+core = 7.x
+package = "Testing"
+hidden = TRUE
+files[] = sbp_test.module
+files[] = sbp_test.install
+
+; Information added by drupal.org packaging script on 2013-01-19
+version = "7.x-1.3"
+core = "7.x"
+project = "search_by_page"
+datestamp = "1358612280"
+

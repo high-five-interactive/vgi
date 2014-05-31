@@ -26,6 +26,56 @@
     <div id="main-inner">
       <?php if(!$is_front) print $breadcrumb; ?>
 
+      <?php if(arg(0) == "products"): ?>
+        <div class="search-filter">
+          <div class="wrapper">
+            <a class="search">Search</a>
+            <a class="filter">Filter</a>
+          </div>
+        </div>
+        <div class="dropdown-search">
+          <div class="wrapper">
+            <?php
+              $block = module_invoke('search_by_page', 'block_view', '1');
+              print render($block);
+            ?>
+          </div>
+        </div>
+        <div class="dropdown-filter">
+          <div class="wrapper">
+            <?php
+              function printTaxTree($vid, $parent = 0) {
+                if($terms = taxonomy_get_tree($vid, $parent)) {
+                  print('<ul>');
+                  foreach ($terms as $term) {
+                    print('<li>');
+                      print l($term->name, 'taxonomy/term/' . $term->tid);
+                      printTaxTree($vid, $term->tid);
+                    print('</li>');
+                  }
+                  print('</ul>');
+                }
+              }
+            ?>
+            <div class="categories">
+              <a class="title">Category</a>
+            <?php
+              $vocab_object = taxonomy_vocabulary_machine_name_load("catalog");
+              $vid = $vocab_object->vid;
+              printTaxTree($vid);
+            ?>
+            </div>
+            <div class="brands">
+              <a class="title">Brand</a>
+              <?php
+                $vocab_object = taxonomy_vocabulary_machine_name_load("manufacturer");
+                $vid = $vocab_object->vid;
+                printTaxTree($vid);
+              ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
       <div id="content" class="column" role="main">
         <div id="content-inner">
           <?php print render($page['above_content']); ?>

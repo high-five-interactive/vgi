@@ -38,6 +38,22 @@
     });
     // End Label Hiding
 
+    // Search/Filter
+    $('.search-filter .search').click(function() {
+      $(this).toggleClass('open');
+      $('.dropdown-search').toggleClass('open');
+      $('.search-filter .filter').removeClass('open');
+      $('.dropdown-filter').removeClass('open');
+    });
+
+    $('.search-filter .filter').click(function() {
+      $(this).toggleClass('open');
+      $('.dropdown-filter').toggleClass('open');
+      $('.search-filter .search').removeClass('open');
+      $('.dropdown-search').removeClass('open');
+    });
+    // End Search/Filter
+
 	}); // End Ready
 
 })(jQuery, Drupal, this, this.document);
